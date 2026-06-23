@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kote 9 Mahar - Daily Arms Register</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #0a0f1e;
+    color: #e0e6f0;
+    min-height: 100vh;
+  }
+
+  /* LOGIN */
+  #loginScreen {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; min-height: 100vh;
+    background: linear-gradient(135deg, #0a0f1e 0%, #1a2340 100%);
+  }
+  .login-box {
+    background: #111827; border: 1px solid #1e3a5f;
+    border-radius: 12px; padding: 36px 28px; width: 320px;
+    box-shadow: 0 8px 32px rgba(0,80,180,0.2);
+  }
+  .login-box h2 { text-align: center; color: #4da6ff; margin-bottom: 6px; font-size: 1.3rem; }
+  .login-box p { text-align: center; color: #7a8fa8; font-size: 0.8rem; margin-bottom: 24px; }
+  .login-box input {
+    width: 100%; padding: 10px 14px; margin-bottom: 14px;
+    background: #1e2d42; border: 1px solid #2a4060; border-radius: 8px;
+    color: #e0e6f0; font-size: 0.95rem; outline: none;
+  }
+  .login-box input:focus { border-color: #4da6ff; }
+  .login-box button {
+    width: 100%; padding: 11px; background: #1a56db;
+    border: none; border-radius: 8px; color: #fff;
+    font-size: 1rem; font-weight: 600; cursor: pointer;
+  }
+  .login-box button:hover { background: #2563eb; }
+  #loginError { color: #f87171; font-size: 0.82rem; text-align: center; margin-top: 10px; }
+  .emblem { font-size: 2.5rem; text-align: center; margin-bottom: 10px; }
+
+  /* HEADER */
+  #appScreen { display: none; }
+  header {
+    background: #111827; border-bottom: 2px solid #1e3a5f;
+    padding: 12px 16px; display: flex; align-items: center;
+    justify-content: space-between; position: sticky; top: 0; z-index: 100;
+  }
+  .header-left h1 { font-size: 1rem; color: #4da6ff; font-weight: 700; }
+  .header-left p { font-size: 0.72rem; color: #7a8fa8; }
+  .header-right { display: flex; gap: 8px; align-items: center; }
+  .badge {
+    background: #1a3a5c; color: #4da6ff; font-size: 0.72rem;
+    padding: 3px 10px; border-radius: 20px; font-weight: 600;
+  }
+  .btn-logout {
+    background: #7f1d1d; border: none; color: #fca5a5;
+    padding: 5px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer;
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex; background: #111827; border-bottom: 1px solid #1e3a5f;
+    overflow-x: auto;
+  }
+  .tab {
+    padding: 10px 18px; font-size: 0.82rem; color: #7a8fa8;
+    border: none; background: none; cursor: pointer; white-space: nowrap;
+    border-bottom: 3px solid transparent;
+  }
+  .tab.active { color: #4da6ff; border-bottom-color: #4da6ff; font-weight: 600; }
+
+  /* CONTENT */
+  .tab-content { display: none; padding: 16px; }
+  .tab-content.active { display: block; }
+
+  /* STATS */
+  .stats-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+    margin-bottom: 16px;
+  }
+  .stat-card {
+    background: #111827; border: 1px solid #1e3a5f;
+    border-radius: 10px; padding: 14px; text-align: center;
+  }
+  .stat-card .num { font-size: 1.8rem; font-weight: 700; color: #4da6ff; }
+  .stat-card .lbl { font-size: 0.72rem; color: #7a8fa8; margin-top: 2px; }
+
+  /* FORM */
+  .form-card {
+    background: #111827; border: 1px solid #1e3a5f;
+    border-radius: 10px; padding: 16px; margin-bottom: 16px;
+  }
+  .form-card h3 { font-size: 0.9rem; color: #4da6ff; margin-bottom: 14px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  .form-group { display: flex; flex-direction: column; gap: 4px; }
+  .form-group label { font-size: 0.72rem; color: #7a8fa8; }
+  .form-group input, .form-group select {
+    padding: 8px 10px; background: #1e2d42;
+    border: 1px solid #2a4060; border-radius: 6px;
+    color: #e0e6f0; font-size: 0.85rem; outline: none;
+  }
+  .form-group input:focus, .form-group select:focus { border-color: #4da6ff; }
+  .btn-primary {
+    background: #1a56db; border: none; color: #fff;
+    padding: 10px 20px; border-radius: 8px;
+    font-size: 0.9rem; font-weight: 600; cursor: pointer; width: 100%;
+  }
+  .btn-primary:hover { background: #2563eb; }
+
+  /* SEARCH */
+  .search-bar {
+    display: flex; gap: 8px; margin-bottom: 14px;
+  }
+  .search-bar input {
+    flex: 1; padding: 9px 12px; background: #1e2d42;
+    border: 1px solid #2a4060; border-radius: 8px;
+    color: #e0e6f0; font-size: 0.85rem; outline: none;
+  }
+  .search-bar input:focus { border-color: #4da6ff; }
+
+  /* TABLE */
+  .table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid #1e3a5f; }
+  table { width: 100%; border-collapse: collapse; min-width: 560px; }
+  thead { background: #1a2a44; }
+  th { padding: 10px 12px; font-size: 0.75rem; color: #7a8fa8; text-align: left; }
+  td { padding: 9px 12px; font-size: 0.8rem; border-top: 1px solid #1e2d42; }
+  tr:hover td { background: #131e30; }
+  .status-issued {
+    background: #052e16; color: #4ade80;
+    padding: 2px 8px; border-radius: 20px; font-size: 0.72rem;
+  }
+  .status-returned {
+    background: #1e3a5f; color: #60a5fa;
+    padding: 2px 8px; border-radius: 20px; font-size: 0.72rem;
+  }
+  .btn-return {
+    background: #064e3b; border: none; color: #6ee7b7;
+    padding: 4px 10px; border-radius: 5px; font-size: 0.75rem; cursor: pointer;
+  }
+  .btn-delete {
+    background: #7f1d1d; border: none; color: #fca5a5;
+    padding: 4px 10px; border-radius: 5px; font-size: 0.75rem; cursor: pointer;
+    margin-left: 4px;
+  }
+
+  /* PERSONNEL */
+  .person-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .person-card {
+    background: #111827; border: 1px solid #1e3a5f;
+    border-radius: 10px; padding: 14px;
+  }
+  .person-card .name { font-size: 0.9rem; font-weight: 600; color: #e0e6f0; }
+  .person-card .rank { font-size: 0.72rem; color: #4da6ff; margin-bottom: 6px; }
+  .person-card .info { font-size: 0.72rem; color: #7a8fa8; }
+  .person-card .armed {
+    display: inline-block; margin-top: 6px;
+    background: #052e16; color: #4ade80;
+    padding: 2px 8px; border-radius: 20px; font-size: 0.7rem;
+  }
+  .person-card .unarmed {
+    display: inline-block; margin-top: 6px;
+    background: #1e2d42; color: #94a3b8;
+    padding: 2px 8px; border-radius: 20px; font-size: 0.7rem;
+  }
+
+  /* DATE */
+  .date-header {
+    font-size: 0.72rem; color: #7a8fa8; margin-bottom: 12px; text-align: right;
+  }
+  .section-title {
+    font-size: 0.8rem; color: #4da6ff; font-weight: 600;
+    margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.05em;
+  }
+
+  /* TOAST */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: #1a56db; color: #fff; padding: 10px 22px;
+    border-radius: 8px; font-size: 0.85rem; z-index: 9999;
+    opacity: 0; transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; }
+
+  /* ADMIN PANEL */
+  .admin-section {
+    background: #111827; border: 1px solid #7f1d1d;
+    border-radius: 10px; padding: 16px; margin-bottom: 14px;
+  }
+  .admin-section h3 { font-size: 0.9rem; color: #f87171; margin-bottom: 12px; }
+  .pwd-change { display: flex; flex-direction: column; gap: 8px; }
+  .pwd-change input {
+    padding: 8px 10px; background: #1e2d42;
+    border: 1px solid #2a4060; border-radius: 6px;
+    color: #e0e6f0; font-size: 0.85rem; outline: none;
+  }
+  .btn-danger {
+    background: #7f1d1d; border: none; color: #fca5a5;
+    padding: 10px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%;
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="emblem">🪖</div>
+    <h2>KOTE 9 MAHAR</h2>
+    <p>Daily Arms Register System</p>
+    <input type="text" id="loginUser" placeholder="Username" autocomplete="off">
+    <input type="password" id="loginPass" placeholder="Password">
+    <button onclick="doLogin()">LOGIN</button>
+    <div id="loginError"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="appScreen">
+  <header>
+    <div class="header-left">
+      <h1>🪖 KOTE 9 MAHAR</h1>
+      <p>Daily Arms Register</p>
+    </div>
+    <div class="header-right">
+      <span class="badge" id="userBadge">USER</span>
+      <button class="btn-logout" onclick="doLogout()">Logout</button>
+    </div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('dashboard')">Dashboard</button>
+    <button class="tab" onclick="showTab('issue')">Issue Arm</button>
+    <button class="tab" onclick="showTab('register')">Register</button>
+    <button class="tab" onclick="showTab('personnel')">Personnel</button>
+    <button class="tab" id="adminTab" onclick="showTab('admin')" style="display:none">Admin</button>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="tab-content active" id="tab-dashboard">
+    <div class="date-header" id="todayDate"></div>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="num" id="statTotal">0</div>
+        <div class="lbl">Total Arms</div>
+      </div>
+      <div class="stat-card">
+        <div class="num" id="statIssued">0</div>
+        <div class="lbl">Issued Today</div>
+      </div>
+      <div class="stat-card">
+        <div class="num" id="statReturned">0</div>
+        <div class="lbl">Returned</div>
+      </div>
+      <div class="stat-card">
+        <div class="num" id="statPersonnel">0</div>
+        <div class="lbl">Personnel</div>
+      </div>
+    </div>
+    <div class="section-title">Today's Issued Arms</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Soldier</th><th>Weapon</th><th>Weapon No.</th><th>Time</th><th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="dashTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ISSUE ARM -->
+  <div class="tab-content" id="tab-issue">
+    <div class="form-card">
+      <h3>Issue Arm to Personnel</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Select Personnel</label>
+          <select id="issuePerson"></select>
+        </div>
+        <div class="form-group">
+          <label>Weapon Type</label>
+          <select id="issueWeapon">
+            <option>INSAS Rifle</option>
+            <option>AK-47</option>
+            <option>SLR</option>
+            <option>9mm Pistol</option>
+            <option>LMG</option>
+            <option>Carbine</option>
+            <option>Rocket Launcher</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Weapon Serial No.</label>
+          <input type="text" id="issueSerial" placeholder="e.g. RI-2024-001">
+        </div>
+        <div class="form-group">
+          <label>Duty/Purpose</label>
+          <input type="text" id="issueDuty" placeholder="e.g. Sentry Duty">
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:12px">
+        <label>Rounds Issued</label>
+        <input type="number" id="issueRounds" placeholder="0" min="0">
+      </div>
+      <button class="btn-primary" onclick="issueArm()">✅ Issue Arm</button>
+    </div>
+  </div>
+
+  <!-- REGISTER -->
+  <div class="tab-content" id="tab-register">
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search by name, weapon, serial..." oninput="renderRegister()">
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Soldier</th><th>Weapon</th><th>Serial No.</th><th>Duty</th><th>Issue Time</th><th>Return Time</th><th>Status</th><th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="registerTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- PERSONNEL -->
+  <div class="tab-content" id="tab-personnel">
+    <div class="form-card" id="addPersonnelForm">
+      <h3>Add Personnel</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="pName" placeholder="Sepoy Ramesh Kumar">
+        </div>
+        <div class="form-group">
+          <label>Rank</label>
+          <select id="pRank">
+            <option>Sepoy</option>
+            <option>Lance Naik</option>
+            <option>Naik</option>
+            <option>Havildar</option>
+            <option>Naib Subedar</option>
+            <option>Subedar</option>
+            <option>Subedar Major</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Army No.</label>
+          <input type="text" id="pArmy" placeholder="1234567">
+        </div>
+        <div class="form-group">
+          <label>Company</label>
+          <input type="text" id="pCompany" placeholder="Alpha Coy">
+        </div>
+      </div>
+      <button class="btn-primary" onclick="addPersonnel()">➕ Add Personnel</button>
+    </div>
+    <div class="section-title">Personnel List</div>
+    <div class="person-grid" id="personnelGrid"></div>
+  </div>
+
+  <!-- ADMIN -->
+  <div class="tab-content" id="tab-admin">
+    <div class="admin-section">
+      <h3>🔴 Admin Panel</h3>
+      <p style="font-size:0.78rem;color:#7a8fa8;margin-bottom:14px">Only admin can access this panel.</p>
+      <div class="pwd-change">
+        <label style="font-size:0.75rem;color:#7a8fa8">Change Admin Password</label>
+        <input type="password" id="newPwd1" placeholder="New Password">
+        <input type="password" id="newPwd2" placeholder="Confirm Password">
+        <button class="btn-danger" onclick="changePassword()">🔑 Change Password</button>
+      </div>
+    </div>
+    <div class="admin-section">
+      <h3>🗑️ Clear All Records</h3>
+      <p style="font-size:0.78rem;color:#7a8fa8;margin-bottom:10px">This will delete all issue records permanently.</p>
+      <button class="btn-danger" onclick="clearAllRecords()">⚠️ Clear All Records</button>
+    </div>
+    <div class="admin-section">
+      <h3>👤 Add Login User</h3>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <input type="text" id="newUsername" placeholder="Username" style="padding:8px 10px;background:#1e2d42;border:1px solid #2a4060;border-radius:6px;color:#e0e6f0;font-size:0.85rem;outline:none">
+        <input type="password" id="newUserPwd" placeholder="Password" style="padding:8px 10px;background:#1e2d42;border:1px solid #2a4060;border-radius:6px;color:#e0e6f0;font-size:0.85rem;outline:none">
+        <select id="newUserRole" style="padding:8px 10px;background:#1e2d42;border:1px solid #2a4060;border-radius:6px;color:#e0e6f0;font-size:0.85rem;outline:none">
+          <option value="user">User</option>
+          <option value="admin">Admin</option>
+        </select>
+        <button class="btn-primary" onclick="addUser()">➕ Add User</button>
+      </div>
+      <div style="margin-top:12px" id="userList"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ---- DATA STORAGE ----
+const KEY_USERS = 'kote_users';
+const KEY_RECORDS = 'kote_records';
+const KEY_PERSONNEL = 'kote_personnel';
+
+function loadUsers() {
+  const d = localStorage.getItem(KEY_USERS);
+  if (d) return JSON.parse(d);
+  // default users
+  const defaults = [
+    { username: 'admin', password: 'kote@9m', role: 'admin' },
+    { username: 'jco', password: 'jco123', role: 'user' }
+  ];
+  localStorage.setItem(KEY_USERS, JSON.stringify(defaults));
+  return defaults;
+}
+function saveUsers(u) { localStorage.setItem(KEY_USERS, JSON.stringify(u)); }
+function loadRecords() { return JSON.parse(localStorage.getItem(KEY_RECORDS) || '[]'); }
+function saveRecords(r) { localStorage.setItem(KEY_RECORDS, JSON.stringify(r)); }
+function loadPersonnel() {
+  const d = localStorage.getItem(KEY_PERSONNEL);
+  if (d) return JSON.parse(d);
+  const defaults = [
+    { id: 1, name: 'Sep Ramesh Kumar', rank: 'Sepoy', armyNo: '1234567', company: 'Alpha Coy' },
+    { id: 2, name: 'Nk Suresh Singh', rank: 'Naik', armyNo: '2345678', company: 'Bravo Coy' },
+    { id: 3, name: 'Hav Mohan Lal', rank: 'Havildar', armyNo: '3456789', company: 'Alpha Coy' }
+  ];
+  localStorage.setItem(KEY_PERSONNEL, JSON.stringify(defaults));
+  return defaults;
+}
+function savePersonnel(p) { localStorage.setItem(KEY_PERSONNEL, JSON.stringify(p)); }
+
+// ---- STATE ----
+let currentUser = null;
+
+// ---- LOGIN ----
+function doLogin() {
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value;
+  const users = loadUsers();
+  const found = users.find(x => x.username === u && x.password === p);
+  if (found) {
+    currentUser = found;
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('appScreen').style.display = 'block';
+    document.getElementById('userBadge').textContent = found.role.toUpperCase() + ': ' + found.username;
+    if (found.role === 'admin') document.getElementById('adminTab').style.display = 'block';
+    init();
+  } else {
+    document.getElementById('loginError').textContent = 'Invalid credentials!';
+  }
+}
+function doLogout() {
+  currentUser = null;
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('appScreen').style.display = 'none';
+  document.getElementById('loginUser').value = '';
+  document.getElementById('loginPass').value = '';
+  document.getElementById('loginError').textContent = '';
+}
+
+// ---- INIT ----
+function init() {
+  document.getElementById('todayDate').textContent = new Date().toDateString() + ' | ' + new Date().toLocaleTimeString();
+  populatePersonnelSelect();
+  renderDashboard();
+  renderRegister();
+  renderPersonnelGrid();
+  if (currentUser.role === 'admin') renderUserList();
+}
+
+// ---- TABS ----
+function showTab(name) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+  if (name === 'register') renderRegister();
+  if (name === 'personnel') renderPersonnelGrid();
+  if (name === 'dashboard') renderDashboard();
+}
+
+// ---- PERSONNEL SELECT ----
+function populatePersonnelSelect() {
+  const sel = document.getElementById('issuePerson');
+  sel.innerHTML = '';
+  loadPersonnel().forEach(p => {
+    sel.innerHTML += `<option value="${p.id}">${p.rank} ${p.name}</option>`;
+  });
+}
+
+// ---- ISSUE ARM ----
+function issueArm() {
+  const pid = document.getElementById('issuePerson').value;
+  const weapon = document.getElementById('issueWeapon').value;
+  const serial = document.getElementById('issueSerial').value.trim();
+  const duty = document.getElementById('issueDuty').value.trim();
+  const rounds = document.getElementById('issueRounds').value;
+  if (!serial) { showToast('Enter weapon serial no.'); return; }
+  const personnel = loadPersonnel().find(p => p.id == pid);
+  const records = loadRecords();
+  records.push({
+    id: Date.now(),
+    personId: pid,
+    personName: personnel ? personnel.rank + ' ' + personnel.name : 'Unknown',
+    weapon, serial, duty,
+    rounds: rounds || 0,
+    issuedAt: new Date().toISOString(),
+    returnedAt: null,
+    status: 'Issued'
+  });
+  saveRecords(records);
+  document.getElementById('issueSerial').value = '';
+  document.getElementById('issueDuty').value = '';
+  document.getElementById('issueRounds').value = '';
+  showToast('Arm issued successfully!');
+  renderDashboard();
+}
+
+// ---- RETURN ARM ----
+function returnArm(id) {
+  const records = loadRecords();
+  const r = records.find(x => x.id == id);
+  if (r) { r.status = 'Returned'; r.returnedAt = new Date().toISOString(); }
+  saveRecords(records);
+  renderRegister();
+  renderDashboard();
+  showToast('Arm returned!');
+}
+
+// ---- DELETE RECORD (ADMIN ONLY) ----
+function deleteRecord(id) {
+  if (currentUser.role !== 'admin') { showToast('Admin only!'); return; }
+  if (!confirm('Delete this record?')) return;
+  const records = loadRecords().filter(x => x.id != id);
+  saveRecords(records);
+  renderRegister();
+  renderDashboard();
+  showToast('Record deleted.');
+}
+
+// ---- DASHBOARD ----
+function renderDashboard() {
+  const records = loadRecords();
+  const personnel = loadPersonnel();
+  const today = new Date().toDateString();
+  const todayRecs = records.filter(r => new Date(r.issuedAt).toDateString() === today);
+  document.getElementById('statTotal').textContent = records.length;
+  document.getElementById('statIssued').textContent = todayRecs.filter(r => r.status === 'Issued').length;
+  document.getElementById('statReturned').textContent = todayRecs.filter(r => r.status === 'Returned').length;
+  document.getElementById('statPersonnel').textContent = personnel.length;
+  const tbody = document.getElementById('dashTable');
+  tbody.innerHTML = todayRecs.length ? '' : '<tr><td colspan="5" style="text-align:center;color:#7a8fa8;padding:20px">No records today</td></tr>';
+  todayRecs.slice().reverse().forEach(r => {
+    tbody.innerHTML += `<tr>
+      <td>${r.personName}</td>
+      <td>${r.weapon}</td>
+      <td>${r.serial}</td>
+      <td>${new Date(r.issuedAt).toLocaleTimeString()}</td>
+      <td><span class="status-${r.status.toLowerCase()}">${r.status}</span></td>
+    </tr>`;
+  });
+}
+
+// ---- REGISTER ----
+function renderRegister() {
+  const q = (document.getElementById('searchInput')?.value || '').toLowerCase();
+  let records = loadRecords();
+  if (q) records = records.filter(r =>
+    r.personName.toLowerCase().includes(q) ||
+    r.weapon.toLowerCase().includes(q) ||
+    r.serial.toLowerCase().includes(q) ||
+    (r.duty || '').toLowerCase().includes(q)
+  );
+  const tbody = document.getElementById('registerTable');
+  tbody.innerHTML = records.length ? '' : '<tr><td colspan="7" style="text-align:center;color:#7a8fa8;padding:20px">No records found</td></tr>';
+  records.slice().reverse().forEach(r => {
+    const isAdmin = currentUser?.role === 'admin';
+    tbody.innerHTML += `<tr>
+      <td>${r.personName}</td>
+      <td>${r.weapon}</td>
+      <td>${r.serial}</td>
+      <td>${r.duty || '-'}</td>
+      <td>${new Date(r.issuedAt).toLocaleDateString()}<br><span style="color:#7a8fa8;font-size:0.7rem">${new Date(r.issuedAt).toLocaleTimeString()}</span></td>
+      <td>${r.returnedAt ? new Date(r.returnedAt).toLocaleDateString() + '<br><span style="color:#7a8fa8;font-size:0.7rem">' + new Date(r.returnedAt).toLocaleTimeString() + '</span>' : '<span style="color:#7a8fa8">-</span>'}</td>
+      <td><span class="status-${r.status.toLowerCase()}">${r.status}</span></td>
+      <td>
+        ${r.status === 'Issued' ? `<button class="btn-return" onclick="returnArm(${r.id})">Return</button>` : ''}
+        ${isAdmin ? `<button class="btn-delete" onclick="deleteRecord(${r.id})">Del</button>` : ''}
+      </td>
+    </tr>`;
+  });
+}
+
+// ---- PERSONNEL ----
+function addPersonnel() {
+  const name = document.getElementById('pName').value.trim();
+  const rank = document.getElementById('pRank').value;
+  const armyNo = document.getElementById('pArmy').value.trim();
+  const company = document.getElementById('pCompany').value.trim();
+  if (!name || !armyNo) { showToast('Enter name and army no.'); return; }
+  const personnel = loadPersonnel();
+  personnel.push({ id: Date.now(), name, rank, armyNo, company });
+  savePersonnel(personnel);
+  document.getElementById('pName').value = '';
+  document.getElementById('pArmy').value = '';
+  document.getElementById('pCompany').value = '';
+  renderPersonnelGrid();
+  populatePersonnelSelect();
+  showToast('Personnel added!');
+}
+function renderPersonnelGrid() {
+  const personnel = loadPersonnel();
+  const records = loadRecords();
+  const grid = document.getElementById('personnelGrid');
+  grid.innerHTML = '';
+  personnel.forEach(p => {
+    const armed = records.find(r => r.personId == p.id && r.status === 'Issued');
+    grid.innerHTML += `<div class="person-card">
+      <div class="rank">${p.rank}</div>
+      <div class="name">${p.name}</div>
+      <div class="info">Army No: ${p.armyNo}</div>
+      <div class="info">${p.company}</div>
+      <span class="${armed ? 'armed' : 'unarmed'}">${armed ? '🔫 Armed' : '✅ Unarmed'}</span>
+    </div>`;
+  });
+}
+
+// ---- ADMIN ----
+function changePassword() {
+  const p1 = document.getElementById('newPwd1').value;
+  const p2 = document.getElementById('newPwd2').value;
+  if (!p1 || p1 !== p2) { showToast('Passwords do not match!'); return; }
+  const users = loadUsers();
+  const u = users.find(x => x.username === currentUser.username);
+  if (u) u.password = p1;
+  saveUsers(users);
+  showToast('Password changed!');
+  document.getElementById('newPwd1').value = '';
+  document.getElementById('newPwd2').value = '';
+}
+function clearAllRecords() {
+  if (!confirm('Delete ALL records? This cannot be undone!')) return;
+  saveRecords([]);
+  renderDashboard();
+  renderRegister();
+  showToast('All records cleared.');
+}
+function addUser() {
+  const u = document.getElementById('newUsername').value.trim();
+  const p = document.getElementById('newUserPwd').value;
+  const r = document.getElementById('newUserRole').value;
+  if (!u || !p) { showToast('Enter username and password'); return; }
+  const users = loadUsers();
+  if (users.find(x => x.username === u)) { showToast('Username already exists!'); return; }
+  users.push({ username: u, password: p, role: r });
+  saveUsers(users);
+  document.getElementById('newUsername').value = '';
+  document.getElementById('newUserPwd').value = '';
+  renderUserList();
+  showToast('User added!');
+}
+function deleteUser(username) {
+  if (username === 'admin') { showToast('Cannot delete admin!'); return; }
+  const users = loadUsers().filter(u => u.username !== username);
+  saveUsers(users);
+  renderUserList();
+  showToast('User deleted.');
+}
+function renderUserList() {
+  const users = loadUsers();
+  const div = document.getElementById('userList');
+  div.innerHTML = '<div style="font-size:0.75rem;color:#7a8fa8;margin-bottom:8px">Existing Users:</div>';
+  users.forEach(u => {
+    div.innerHTML += `<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #1e2d42">
+      <span style="font-size:0.82rem">${u.username} <span style="color:#4da6ff;font-size:0.7rem">(${u.role})</span></span>
+      ${u.username !== 'admin' ? `<button class="btn-delete" onclick="deleteUser('${u.username}')">Del</button>` : ''}
+    </div>`;
+  });
+}
+
+// ---- TOAST ----
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// Enter key login
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('loginScreen').style.display !== 'none') doLogin();
+});
+</script>
+</body>
+</html>
