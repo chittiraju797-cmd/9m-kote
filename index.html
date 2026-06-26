@@ -257,7 +257,7 @@
   <!-- PERSONNEL -->
   <div class="tab-content" id="tab-personnel">
     <div class="form-card" id="addPersonnelForm">
-      <h3>Add Personnel</h3>
+      <h3>Add Personnel <span id="personnelCompanyLabel" style="font-size:0.75rem;color:#7a8fa8"></span></h3>
       <div class="form-row">
         <div class="form-group">
           <label>Full Name</label>
@@ -341,6 +341,15 @@
         <select id="newUserRole" style="padding:8px 10px;background:#1e2d42;border:1px solid #2a4060;border-radius:6px;color:#e0e6f0;font-size:0.85rem;outline:none">
           <option value="user">User</option>
           <option value="admin">Admin</option>
+        </select>
+        <select id="newUserCompany" style="padding:8px 10px;background:#1e2d42;border:1px solid #2a4060;border-radius:6px;color:#e0e6f0;font-size:0.85rem;outline:none">
+          <option value="all">All Companies (Admin)</option>
+          <option value="Alpha Coy">Alpha Coy</option>
+          <option value="Bravo Coy">Bravo Coy</option>
+          <option value="Charlie Coy">Charlie Coy</option>
+          <option value="Delta Coy">Delta Coy</option>
+          <option value="HQ Coy">HQ Coy</option>
+          <option value="Sp Coy">Sp Coy</option>
         </select>
         <button class="btn-primary" onclick="addUser()">➕ Add User</button>
       </div>
@@ -455,10 +464,11 @@ window.doLogin = async function() {
     if (cached) users = JSON.parse(cached);
   }
   if (users && users[u] && users[u].password === p) {
-    currentUser = { username: u, ...users[u] };
+    currentUser = { username: u, ...users[u], company: users[u].company || 'all' };
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('appScreen').style.display = 'block';
-    document.getElementById('userBadge').textContent = users[u].role.toUpperCase() + ': ' + u;
+    const companyLabel = users[u].company && users[u].company !== 'all' ? ' | ' + users[u].company : '';
+    document.getElementById('userBadge').textContent = users[u].role.toUpperCase() + ': ' + u + companyLabel;
     document.getElementById('profileUsername').textContent = u;
     if (users[u].role === 'admin') document.getElementById('adminTab').style.display = 'block';
     else document.getElementById('adminTab').style.display = 'none';
@@ -486,6 +496,18 @@ function init() {
   renderRegister();
   renderPersonnelGrid();
   if (currentUser.role === 'admin') renderUserList();
+  // Show company label
+  const lbl = document.getElementById('personnelCompanyLabel');
+  if (lbl && currentUser.company && currentUser.company !== 'all') {
+    lbl.textContent = '(' + currentUser.company + ')';
+  }
+  // Hide company input for non-admin
+  const companyInput = document.getElementById('pCompany');
+  if (companyInput && currentUser.role !== 'admin' && currentUser.company !== 'all') {
+    companyInput.value = currentUser.company;
+    companyInput.readOnly = true;
+    companyInput.style.opacity = '0.6';
+  }
 }
 
 // ---- TABS ----
@@ -501,7 +523,8 @@ function populatePersonnelSelect() {
   const sel = document.getElementById('issuePerson');
   if (!sel) return;
   sel.innerHTML = '';
-  Object.entries(allPersonnel).forEach(([id, p]) => {
+  const filteredPersonnel = filterPersonnelByCompany(allPersonnel);
+  Object.entries(filteredPersonnel).forEach(([id, p]) => {
     sel.innerHTML += `<option value="${id}">${p.rank} ${p.name}</option>`;
   });
 }
@@ -555,9 +578,33 @@ window.deleteRecord = async function(id) {
   showToast('Record deleted.');
 }
 
+// ---- COMPANY FILTER ----
+function getUserCompany() {
+  if (!currentUser) return 'all';
+  if (currentUser.role === 'admin') return 'all';
+  return currentUser.company || 'all';
+}
+
+function filterByCompany(records) {
+  const company = getUserCompany();
+  if (company === 'all') return records;
+  return records.filter(r => {
+    const p = allPersonnel[r.personId];
+    return p && p.company === company;
+  });
+}
+
+function filterPersonnelByCompany(personnel) {
+  const company = getUserCompany();
+  if (company === 'all') return personnel;
+  return Object.fromEntries(
+    Object.entries(personnel).filter(([id, p]) => p.company === company)
+  );
+}
+
 // ---- DASHBOARD ----
 function renderDashboard() {
-  const records = Object.values(allRecords);
+  const records = filterByCompany(Object.values(allRecords));
   const today = new Date().toDateString();
   const todayRecs = records.filter(r => new Date(r.issuedAt).toDateString() === today);
   document.getElementById('statTotal').textContent = records.length;
@@ -578,7 +625,7 @@ function renderDashboard() {
 // ---- REGISTER ----
 window.renderRegister = function() {
   const q = (document.getElementById('searchInput')?.value || '').toLowerCase();
-  let records = Object.values(allRecords);
+  let records = filterByCompany(Object.values(allRecords));
   if (q) records = records.filter(r =>
     r.personName.toLowerCase().includes(q) ||
     r.weapon.toLowerCase().includes(q) ||
@@ -609,7 +656,11 @@ window.addPersonnel = async function() {
   const name = document.getElementById('pName').value.trim();
   const rank = document.getElementById('pRank').value;
   const armyNo = document.getElementById('pArmy').value.trim();
-  const company = document.getElementById('pCompany').value.trim();
+  let company = document.getElementById('pCompany').value.trim();
+  // Non-admin users can only add to their own company
+  if (currentUser.role !== 'admin' && currentUser.company !== 'all') {
+    company = currentUser.company;
+  }
   if (!name || !armyNo) { showToast('Enter name and army no.'); return; }
   const id = 'p' + Date.now();
   await dbSet('personnel/' + id, { name, rank, armyNo, company });
@@ -624,7 +675,8 @@ function renderPersonnelGrid() {
   if (!grid) return;
   grid.innerHTML = '';
   const records = Object.values(allRecords);
-  Object.entries(allPersonnel).forEach(([id, p]) => {
+  const filteredPersonnel = filterPersonnelByCompany(allPersonnel);
+  Object.entries(filteredPersonnel).forEach(([id, p]) => {
     const armed = records.find(r => r.personId === id && r.status === 'Issued');
     grid.innerHTML += `<div class="person-card">
       <div class="rank">${p.rank}</div>
@@ -676,10 +728,11 @@ window.addUser = async function() {
   const u = document.getElementById('newUsername').value.trim();
   const p = document.getElementById('newUserPwd').value;
   const r = document.getElementById('newUserRole').value;
+  const company = document.getElementById('newUserCompany').value;
   if (!u || !p) { showToast('Enter username and password'); return; }
   const users = await dbGet('users');
   if (users && users[u]) { showToast('Username already exists!'); return; }
-  await dbSet('users/' + u, { password: p, role: r });
+  await dbSet('users/' + u, { password: p, role: r, company: company });
   document.getElementById('newUsername').value = '';
   document.getElementById('newUserPwd').value = '';
   renderUserList();
@@ -700,7 +753,7 @@ async function renderUserList() {
   div.innerHTML = '<div style="font-size:0.75rem;color:#7a8fa8;margin-bottom:8px">Existing Users:</div>';
   Object.entries(users).forEach(([uname, udata]) => {
     div.innerHTML += `<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #1e2d42">
-      <span style="font-size:0.82rem">${uname} <span style="color:#4da6ff;font-size:0.7rem">(${udata.role})</span></span>
+      <span style="font-size:0.82rem">${uname} <span style="color:#4da6ff;font-size:0.7rem">(${udata.role})</span> <span style="color:#7a8fa8;font-size:0.7rem">${udata.company || 'all'}</span></span>
       ${uname !== 'admin' ? `<button class="btn-delete" onclick="deleteUser('${uname}')">Del</button>` : ''}
     </div>`;
   });
