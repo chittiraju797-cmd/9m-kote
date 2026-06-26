@@ -1,0 +1,25 @@
+{
+  "name": "Kote 9 Mahar Arms Register",
+  "short_name": "Kote 9M",
+  "description": "Daily Arms Register - 9 Mahar Regiment",
+  "start_url": "/9m-kote/",
+  "scope": "/9m-kote/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a0f1e",
+  "theme_color": "#1a56db",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
