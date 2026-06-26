@@ -151,6 +151,10 @@
     <input type="password" id="loginPass" placeholder="Password">
     <button onclick="doLogin()">LOGIN</button>
     <div id="loginError"></div>
+    <div id="loginAttempts" class="login-attempts"></div>
+    <div id="lockoutMsg" class="lockout-msg" style="display:none">
+      🔒 Account locked! 3 wrong attempts.<br>Try again after <span id="lockoutTimer">30</span> seconds.
+    </div>
   </div>
 </div>
 
@@ -329,6 +333,12 @@
       </div>
     </div>
     <div class="admin-section">
+      <h3>📋 Login Activity Log</h3>
+      <div id="activityLog" style="max-height:200px;overflow-y:auto"></div>
+      <button class="btn-danger" style="margin-top:10px" onclick="clearActivityLog()">🗑️ Clear Log</button>
+    </div>
+
+    <div class="admin-section">
       <h3>🗑️ Clear All Records</h3>
       <p style="font-size:0.78rem;color:#7a8fa8;margin-bottom:10px">This will delete all issue records permanently.</p>
       <button class="btn-danger" onclick="clearAllRecords()">⚠️ Clear All Records</button>
@@ -452,9 +462,92 @@ window.addEventListener('load', async () => {
 });
 
 // ---- LOGIN ----
+// ---- SECURITY ----
+const MAX_ATTEMPTS = 3;
+const LOCKOUT_TIME = 30; // seconds
+const SESSION_TIMEOUT = 30 * 60 * 1000; // 30 minutes
+let sessionTimer = null;
+let sessionExpiry = null;
+
+function getLoginAttempts(username) {
+  const data = JSON.parse(localStorage.getItem('login_attempts') || '{}');
+  return data[username] || { count: 0, lockedUntil: 0 };
+}
+
+function setLoginAttempts(username, data) {
+  const all = JSON.parse(localStorage.getItem('login_attempts') || '{}');
+  all[username] = data;
+  localStorage.setItem('login_attempts', JSON.stringify(all));
+}
+
+function resetLoginAttempts(username) {
+  const all = JSON.parse(localStorage.getItem('login_attempts') || '{}');
+  delete all[username];
+  localStorage.setItem('login_attempts', JSON.stringify(all));
+}
+
+function logActivity(username, action, success) {
+  const logs = JSON.parse(localStorage.getItem('activity_log') || '[]');
+  logs.unshift({
+    time: new Date().toISOString(),
+    username, action, success,
+    device: navigator.userAgent.includes('Mobile') ? 'Mobile' : 'Desktop'
+  });
+  // Keep only last 50 logs
+  if (logs.length > 50) logs.pop();
+  localStorage.setItem('activity_log', JSON.stringify(logs));
+  // Also save to Firebase
+  dbSet('logs/' + Date.now(), { time: new Date().toISOString(), username, action, success });
+}
+
+function startSessionTimer() {
+  clearInterval(sessionTimer);
+  sessionExpiry = Date.now() + SESSION_TIMEOUT;
+  sessionTimer = setInterval(() => {
+    const remaining = sessionExpiry - Date.now();
+    if (remaining <= 0) {
+      clearInterval(sessionTimer);
+      showToast('Session expired! Please login again.');
+      setTimeout(() => doLogout(), 1500);
+    }
+  }, 1000);
+
+  // Reset timer on user activity
+  ['click', 'touchstart', 'keydown'].forEach(evt => {
+    document.addEventListener(evt, () => {
+      if (currentUser) sessionExpiry = Date.now() + SESSION_TIMEOUT;
+    }, { passive: true });
+  });
+}
+
 window.doLogin = async function() {
   const u = document.getElementById('loginUser').value.trim();
   const p = document.getElementById('loginPass').value;
+  const errDiv = document.getElementById('loginError');
+  const attemptsDiv = document.getElementById('loginAttempts');
+  const lockoutMsg = document.getElementById('lockoutMsg');
+
+  if (!u || !p) { errDiv.textContent = 'Enter username and password!'; return; }
+
+  // Check lockout
+  const attempts = getLoginAttempts(u);
+  if (attempts.lockedUntil > Date.now()) {
+    const remaining = Math.ceil((attempts.lockedUntil - Date.now()) / 1000);
+    lockoutMsg.style.display = 'block';
+    document.getElementById('lockoutTimer').textContent = remaining;
+    const countdown = setInterval(() => {
+      const r = Math.ceil((attempts.lockedUntil - Date.now()) / 1000);
+      if (r <= 0) {
+        clearInterval(countdown);
+        lockoutMsg.style.display = 'none';
+        resetLoginAttempts(u);
+      } else {
+        document.getElementById('lockoutTimer').textContent = r;
+      }
+    }, 1000);
+    return;
+  }
+
   let users = null;
   if (navigator.onLine) {
     users = await dbGet('users');
@@ -464,6 +557,9 @@ window.doLogin = async function() {
     if (cached) users = JSON.parse(cached);
   }
   if (users && users[u] && users[u].password === p) {
+    resetLoginAttempts(u);
+    logActivity(u, 'LOGIN', true);
+    startSessionTimer();
     currentUser = { username: u, ...users[u], company: users[u].company || 'all' };
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('appScreen').style.display = 'block';
@@ -474,18 +570,76 @@ window.doLogin = async function() {
     else document.getElementById('adminTab').style.display = 'none';
     init();
   } else {
-    document.getElementById('loginError').textContent = 'Invalid credentials!';
+    // Failed login
+    logActivity(u, 'FAILED LOGIN', false);
+    const att = getLoginAttempts(u);
+    att.count = (att.count || 0) + 1;
+    const remaining = MAX_ATTEMPTS - att.count;
+    if (att.count >= MAX_ATTEMPTS) {
+      att.lockedUntil = Date.now() + (LOCKOUT_TIME * 1000);
+      setLoginAttempts(u, att);
+      document.getElementById('lockoutMsg').style.display = 'block';
+      document.getElementById('lockoutTimer').textContent = LOCKOUT_TIME;
+      errDiv.textContent = '';
+      attemptsDiv.textContent = '';
+    } else {
+      setLoginAttempts(u, att);
+      errDiv.textContent = 'Invalid credentials!';
+      attemptsDiv.textContent = `⚠️ ${remaining} attempt${remaining>1?'s':''} remaining before lockout`;
+    }
   }
 }
 
 window.doLogout = function() {
+  if (currentUser) logActivity(currentUser.username, 'LOGOUT', true);
+  clearInterval(sessionTimer);
   currentUser = null;
   document.getElementById('loginScreen').style.display = 'flex';
   document.getElementById('appScreen').style.display = 'none';
   document.getElementById('loginUser').value = '';
   document.getElementById('loginPass').value = '';
   document.getElementById('loginError').textContent = '';
+  document.getElementById('loginAttempts').textContent = '';
+  document.getElementById('lockoutMsg').style.display = 'none';
   document.getElementById('adminTab').style.display = 'none';
+}
+
+// ---- ACTIVITY LOG ----
+window.clearActivityLog = function() {
+  if (!confirm('Clear all activity logs?')) return;
+  localStorage.removeItem('activity_log');
+  dbSet('logs', {});
+  renderActivityLog();
+  showToast('Activity log cleared!');
+}
+
+async function renderActivityLog() {
+  const div = document.getElementById('activityLog');
+  if (!div) return;
+  
+  // Try Firebase first, fallback to local
+  let logs = [];
+  try {
+    const fbLogs = await dbGet('logs');
+    if (fbLogs) {
+      logs = Object.values(fbLogs).sort((a,b) => new Date(b.time) - new Date(a.time));
+    }
+  } catch(e) {
+    const local = JSON.parse(localStorage.getItem('activity_log') || '[]');
+    logs = local;
+  }
+
+  if (!logs.length) { div.innerHTML = '<p style="color:#7a8fa8;font-size:0.78rem">No activity yet</p>'; return; }
+  
+  div.innerHTML = logs.slice(0, 20).map(l => `
+    <div class="log-entry">
+      <span class="log-time">${new Date(l.time).toLocaleString()}</span><br>
+      <span class="log-user">${l.username}</span>
+      <span class="log-action"> — ${l.action}</span>
+      <span style="color:${l.success ? '#4ade80' : '#f87171'};font-size:0.7rem"> ${l.success ? '✅' : '❌'}</span>
+      <span style="color:#7a8fa8;font-size:0.68rem"> ${l.device || ''}</span>
+    </div>
+  `).join('');
 }
 
 // ---- INIT ----
