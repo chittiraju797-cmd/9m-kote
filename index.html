@@ -930,7 +930,7 @@ window.weaponSelectChange = function() {
 }
 
 window.deletePersonnel = async function(id, name) {
-  if (!confirm(`Remove ${name} from personnel list?`)) return;
+  if (!confirm('Remove ' + name + ' from personnel list?')) return;
   const p = allPersonnel[id];
   if (!p) { showToast('Personnel not found!'); return; }
   // Check permission
@@ -941,11 +941,21 @@ window.deletePersonnel = async function(id, name) {
   }
   // Check if armed
   const armed = Object.values(allRecords).find(r => r.personId === id && r.status === 'Issued');
-  if (armed) { showToast('Cannot remove armed personnel! Return weapon first.'); return; }
-  await dbRemove('personnel/' + id);
-  logActivity(currentUser.username, 'REMOVED PERSONNEL: ' + name, true);
-  showToast(name + ' removed!');
-  populatePersonnelSelect();
+  if (armed) { showToast('Cannot remove! Return weapon first.'); return; }
+  try {
+    await dbRemove('personnel/' + id);
+    logActivity(currentUser.username, 'REMOVED: ' + name, true);
+    showToast(name + ' removed successfully!');
+  } catch(e) {
+    // Fallback: set to null
+    try {
+      await dbSet('personnel/' + id, null);
+      showToast(name + ' removed!');
+    } catch(e2) {
+      showToast('Error! Check Firebase rules.');
+      console.error(e2);
+    }
+  }
 }
 
 window.showToast = function(msg) {
