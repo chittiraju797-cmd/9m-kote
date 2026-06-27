@@ -930,31 +930,24 @@ window.weaponSelectChange = function() {
 }
 
 window.deletePersonnel = async function(id, name) {
-  if (!confirm('Remove ' + name + ' from personnel list?')) return;
-  const p = allPersonnel[id];
-  if (!p) { showToast('Personnel not found!'); return; }
-  // Check permission
-  if (currentUser.role !== 'admin' && currentUser.company !== 'all') {
-    if (p.company !== currentUser.company) {
-      showToast('Permission denied!'); return;
-    }
-  }
+  if (!confirm('Remove ' + name + '?')) return;
   // Check if armed
   const armed = Object.values(allRecords).find(r => r.personId === id && r.status === 'Issued');
-  if (armed) { showToast('Cannot remove! Return weapon first.'); return; }
+  if (armed) { showToast('Return weapon first!'); return; }
+  // Direct Firebase delete using fetch
+  const dbUrl = 'https://m-kote-fedda-default-rtdb.firebaseio.com/personnel/' + id + '.json';
   try {
-    await dbRemove('personnel/' + id);
-    logActivity(currentUser.username, 'REMOVED: ' + name, true);
-    showToast(name + ' removed successfully!');
-  } catch(e) {
-    // Fallback: set to null
-    try {
-      await dbSet('personnel/' + id, null);
+    const res = await fetch(dbUrl, { method: 'DELETE' });
+    if (res.ok) {
+      delete allPersonnel[id];
+      renderPersonnelGrid();
+      populatePersonnelSelect();
       showToast(name + ' removed!');
-    } catch(e2) {
-      showToast('Error! Check Firebase rules.');
-      console.error(e2);
+    } else {
+      showToast('Delete failed! Status: ' + res.status);
     }
+  } catch(e) {
+    showToast('Network error: ' + e.message);
   }
 }
 
