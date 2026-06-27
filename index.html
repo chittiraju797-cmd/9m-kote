@@ -651,18 +651,39 @@ function init() {
   renderDashboard();
   renderRegister();
   renderPersonnelGrid();
-  if (currentUser.role === 'admin') renderUserList();
-  // Show company label
-  const lbl = document.getElementById('personnelCompanyLabel');
-  if (lbl && currentUser.company && currentUser.company !== 'all') {
-    lbl.textContent = '(' + currentUser.company + ')';
+  if (currentUser.role === 'admin') {
+    renderUserList();
+    // Admin: show admin tab
+    const adminTab = document.getElementById('adminTab');
+    if (adminTab) adminTab.style.display = '';
   }
-  // Hide company input for non-admin
+  
+  // Show company label in Personnel header
+  const lbl = document.getElementById('personnelCompanyLabel');
+  if (lbl) {
+    if (currentUser.role === 'admin') {
+      lbl.textContent = '(All Companies)';
+    } else if (currentUser.company && currentUser.company !== 'all') {
+      lbl.textContent = '(' + currentUser.company + ' only)';
+    }
+  }
+  
+  // Company input handling
   const companyInput = document.getElementById('pCompany');
-  if (companyInput && currentUser.role !== 'admin' && currentUser.company !== 'all') {
-    companyInput.value = currentUser.company;
-    companyInput.readOnly = true;
-    companyInput.style.opacity = '0.6';
+  if (companyInput) {
+    if (currentUser.role !== 'admin') {
+      if (currentUser.company && currentUser.company !== 'all') {
+        companyInput.value = currentUser.company;
+        companyInput.readOnly = true;
+        companyInput.style.opacity = '0.6';
+      } else {
+        // No company assigned - hide Add Personnel form entirely
+        const addForm = document.getElementById('addPersonnelForm');
+        if (addForm) {
+          addForm.innerHTML = '<p style="color:#f87171;font-size:0.85rem;text-align:center;padding:10px">⚠️ Company not assigned. Contact Admin to add personnel.</p>';
+        }
+      }
+    }
   }
 }
 
@@ -817,17 +838,35 @@ window.addPersonnel = async function() {
   const rank = document.getElementById('pRank').value;
   const armyNo = document.getElementById('pArmy').value.trim();
   let company = document.getElementById('pCompany').value.trim();
-  // Non-admin users can only add to their own company
-  if (currentUser.role !== 'admin' && currentUser.company !== 'all') {
+  
+  // Non-admin: force their own company
+  if (currentUser.role !== 'admin') {
+    if (!currentUser.company || currentUser.company === 'all') {
+      showToast('Company not assigned! Contact Admin.');
+      return;
+    }
     company = currentUser.company;
   }
-  if (!name || !armyNo) { showToast('Enter name and army no.'); return; }
+  
+  if (!name) { showToast('Name enter చేయండి!'); return; }
+  if (!armyNo) { showToast('Army No. enter చేయండి!'); return; }
+  if (!company) { showToast('Company enter చేయండి!'); return; }
+  
+  // Check duplicate army no
+  const existing = Object.values(allPersonnel).find(p => p.armyNo === armyNo);
+  if (existing) { showToast('Army No. already exists: ' + existing.name); return; }
+  
   const id = 'p' + Date.now();
-  await dbSet('personnel/' + id, { name, rank, armyNo, company });
-  document.getElementById('pName').value = '';
-  document.getElementById('pArmy').value = '';
-  document.getElementById('pCompany').value = '';
-  showToast('Personnel added!');
+  try {
+    await dbSet('personnel/' + id, { name, rank, armyNo, company });
+    document.getElementById('pName').value = '';
+    document.getElementById('pArmy').value = '';
+    if (currentUser.role === 'admin') document.getElementById('pCompany').value = '';
+    showToast('✅ ' + rank + ' ' + name + ' added!');
+  } catch(e) {
+    showToast('Error: ' + e.message);
+    console.error('addPersonnel error:', e);
+  }
 }
 
 function renderPersonnelGrid() {
@@ -951,8 +990,11 @@ window.deletePersonnel = async function(id, name) {
     const res = await fetch(dbUrl, { method: 'DELETE' });
     if (res.ok) {
       delete allPersonnel[id];
+      // Fix: update localStorage cache so deleted person doesn't come back
+      localStorage.setItem('cache_personnel', JSON.stringify(allPersonnel));
       renderPersonnelGrid();
       populatePersonnelSelect();
+      document.getElementById('statPersonnel').textContent = Object.keys(allPersonnel).length;
       showToast(name + ' removed!');
     } else {
       showToast('Delete failed! Status: ' + res.status);
