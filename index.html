@@ -832,12 +832,15 @@ function renderPersonnelGrid() {
   const filteredPersonnel = filterPersonnelByCompany(allPersonnel);
   Object.entries(filteredPersonnel).forEach(([id, p]) => {
     const armed = records.find(r => r.personId === id && r.status === 'Issued');
+    const canDelete = currentUser.role === 'admin' || 
+      (currentUser.company && currentUser.company !== 'all' && p.company === currentUser.company);
     grid.innerHTML += `<div class="person-card">
       <div class="rank">${p.rank}</div>
       <div class="name">${p.name}</div>
       <div class="info">Army No: ${p.armyNo}</div>
       <div class="info">${p.company}</div>
       <span class="${armed ? 'armed' : 'unarmed'}">${armed ? '🔫 Armed' : '✅ Unarmed'}</span>
+      ${canDelete ? `<button class="btn-delete" style="margin-top:8px;width:100%" onclick="deletePersonnel('${id}', '${p.name}')">🗑️ Remove</button>` : ''}
     </div>`;
   });
 }
@@ -924,6 +927,25 @@ window.weaponSelectChange = function() {
     custom.style.display = 'none';
     custom.value = '';
   }
+}
+
+window.deletePersonnel = async function(id, name) {
+  if (!confirm(`Remove ${name} from personnel list?`)) return;
+  const p = allPersonnel[id];
+  if (!p) { showToast('Personnel not found!'); return; }
+  // Check permission
+  if (currentUser.role !== 'admin' && currentUser.company !== 'all') {
+    if (p.company !== currentUser.company) {
+      showToast('Permission denied!'); return;
+    }
+  }
+  // Check if armed
+  const armed = Object.values(allRecords).find(r => r.personId === id && r.status === 'Issued');
+  if (armed) { showToast('Cannot remove armed personnel! Return weapon first.'); return; }
+  await dbRemove('personnel/' + id);
+  logActivity(currentUser.username, 'REMOVED PERSONNEL: ' + name, true);
+  showToast(name + ' removed!');
+  populatePersonnelSelect();
 }
 
 window.showToast = function(msg) {
