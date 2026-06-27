@@ -15,146 +15,160 @@
   }
   .login-box {
     background: #111827; border: 1px solid #1e3a5f;
-    border-radius: 12px; padding: 36px 28px; width: 320px;
-    box-shadow: 0 8px 32px rgba(0,80,180,0.2);
+    border-radius: 16px; padding: 36px 28px; width: 320px;
+    box-shadow: 0 8px 32px rgba(0,80,180,0.3);
   }
-  .login-box h2 { text-align: center; color: #4da6ff; margin-bottom: 6px; font-size: 1.3rem; }
+  .login-logo { text-align: center; margin-bottom: 10px; }
+  .login-logo img { width: 80px; height: 80px; border-radius: 50%; border: 2px solid #4da6ff; }
+  .login-box h2 { text-align: center; color: #4da6ff; margin-bottom: 4px; font-size: 1.4rem; letter-spacing: 2px; }
   .login-box p { text-align: center; color: #7a8fa8; font-size: 0.8rem; margin-bottom: 24px; }
   .login-box input {
-    width: 100%; padding: 10px 14px; margin-bottom: 14px;
+    width: 100%; padding: 11px 14px; margin-bottom: 12px;
     background: #1e2d42; border: 1px solid #2a4060; border-radius: 8px;
     color: #e0e6f0; font-size: 0.95rem; outline: none;
   }
   .login-box input:focus { border-color: #4da6ff; }
   .login-box button {
-    width: 100%; padding: 11px; background: #1a56db;
+    width: 100%; padding: 12px; background: #1a56db;
     border: none; border-radius: 8px; color: #fff;
-    font-size: 1rem; font-weight: 600; cursor: pointer;
+    font-size: 1rem; font-weight: 700; cursor: pointer; letter-spacing: 1px;
   }
   .login-box button:hover { background: #2563eb; }
-  #loginError { color: #f87171; font-size: 0.82rem; text-align: center; margin-top: 10px; }
-  .emblem { font-size: 2.5rem; text-align: center; margin-bottom: 10px; }
+  #loginError { color: #f87171; font-size: 0.82rem; text-align: center; margin-top: 10px; min-height: 20px; }
 
   #loadingScreen {
     display: none; position: fixed; inset: 0;
     background: #0a0f1e; z-index: 9999;
     align-items: center; justify-content: center; flex-direction: column; gap: 16px;
   }
-  .spinner {
-    width: 40px; height: 40px; border: 4px solid #1e3a5f;
-    border-top-color: #4da6ff; border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
+  .spinner { width: 40px; height: 40px; border: 4px solid #1e3a5f; border-top-color: #4da6ff; border-radius: 50%; animation: spin 0.8s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
   #appScreen { display: none; }
   header {
     background: #111827; border-bottom: 2px solid #1e3a5f;
-    padding: 12px 16px; display: flex; align-items: center;
+    padding: 10px 14px; display: flex; align-items: center;
     justify-content: space-between; position: sticky; top: 0; z-index: 100;
   }
-  .header-left h1 { font-size: 1rem; color: #4da6ff; font-weight: 700; }
-  .header-left p { font-size: 0.72rem; color: #7a8fa8; }
-  .header-right { display: flex; gap: 8px; align-items: center; }
-  .badge { background: #1a3a5c; color: #4da6ff; font-size: 0.72rem; padding: 3px 10px; border-radius: 20px; font-weight: 600; }
-  .btn-logout { background: #7f1d1d; border: none; color: #fca5a5; padding: 5px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; }
+  .header-left { display: flex; align-items: center; gap: 8px; }
+  .header-left img { width: 32px; height: 32px; border-radius: 50%; }
+  .header-left h1 { font-size: 0.95rem; color: #4da6ff; font-weight: 700; }
+  .header-left p { font-size: 0.68rem; color: #7a8fa8; }
+  .header-right { display: flex; gap: 6px; align-items: center; }
+  .badge { background: #1a3a5c; color: #4da6ff; font-size: 0.7rem; padding: 3px 8px; border-radius: 20px; font-weight: 600; }
+  .btn-logout { background: #7f1d1d; border: none; color: #fca5a5; padding: 5px 10px; border-radius: 6px; font-size: 0.78rem; cursor: pointer; }
 
   .tabs { display: flex; background: #111827; border-bottom: 1px solid #1e3a5f; overflow-x: auto; }
-  .tab { padding: 10px 18px; font-size: 0.82rem; color: #7a8fa8; border: none; background: none; cursor: pointer; white-space: nowrap; border-bottom: 3px solid transparent; }
+  .tab { padding: 10px 14px; font-size: 0.78rem; color: #7a8fa8; border: none; background: none; cursor: pointer; white-space: nowrap; border-bottom: 3px solid transparent; }
   .tab.active { color: #4da6ff; border-bottom-color: #4da6ff; font-weight: 600; }
 
-  .tab-content { display: none; padding: 16px; }
+  .tab-content { display: none; padding: 14px; }
   .tab-content.active { display: block; }
 
-  .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
+  .sync-indicator { display: flex; align-items: center; gap: 6px; font-size: 0.72rem; color: #4ade80; margin-bottom: 10px; }
+  .sync-dot { width: 8px; height: 8px; background: #4ade80; border-radius: 50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  .date-header { font-size: 0.78rem; color: #7a8fa8; margin-bottom: 12px; }
+
+  .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 14px; }
   .stat-card { background: #111827; border: 1px solid #1e3a5f; border-radius: 10px; padding: 14px; text-align: center; }
   .stat-card .num { font-size: 1.8rem; font-weight: 700; color: #4da6ff; }
-  .stat-card .lbl { font-size: 0.72rem; color: #7a8fa8; margin-top: 2px; }
+  .stat-card .lbl { font-size: 0.7rem; color: #7a8fa8; margin-top: 2px; }
 
-  .form-card { background: #111827; border: 1px solid #1e3a5f; border-radius: 10px; padding: 16px; margin-bottom: 16px; }
-  .form-card h3 { font-size: 0.9rem; color: #4da6ff; margin-bottom: 14px; }
+  .section-title { font-size: 0.82rem; color: #4da6ff; font-weight: 600; margin-bottom: 10px; padding-bottom: 4px; border-bottom: 1px solid #1e3a5f; }
+
+  .form-card { background: #111827; border: 1px solid #1e3a5f; border-radius: 10px; padding: 14px; margin-bottom: 14px; }
+  .form-card h3 { font-size: 0.88rem; color: #4da6ff; margin-bottom: 12px; }
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-  .form-group { display: flex; flex-direction: column; gap: 4px; }
-  .form-group label { font-size: 0.72rem; color: #7a8fa8; }
+  .form-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+  .form-group label { font-size: 0.7rem; color: #7a8fa8; }
   .form-group input, .form-group select {
-    padding: 8px 10px; background: #1e2d42;
+    padding: 9px 10px; background: #1e2d42;
     border: 1px solid #2a4060; border-radius: 6px;
     color: #e0e6f0; font-size: 0.85rem; outline: none;
   }
   .form-group input:focus, .form-group select:focus { border-color: #4da6ff; }
-  .btn-primary { background: #1a56db; border: none; color: #fff; padding: 10px 20px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; width: 100%; }
+  .btn-primary { background: #1a56db; border: none; color: #fff; padding: 10px 20px; border-radius: 8px; font-size: 0.88rem; font-weight: 600; cursor: pointer; width: 100%; }
   .btn-primary:hover { background: #2563eb; }
+  .btn-danger { background: #7f1d1d; border: none; color: #fca5a5; padding: 9px 16px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; width: 100%; margin-top: 6px; }
+  .btn-warning { background: #78350f; border: none; color: #fcd34d; padding: 7px 14px; border-radius: 6px; font-size: 0.78rem; cursor: pointer; }
 
-  .search-bar { display: flex; gap: 8px; margin-bottom: 14px; }
+  .search-bar { display: flex; gap: 8px; margin-bottom: 12px; }
   .search-bar input { flex: 1; padding: 9px 12px; background: #1e2d42; border: 1px solid #2a4060; border-radius: 8px; color: #e0e6f0; font-size: 0.85rem; outline: none; }
   .search-bar input:focus { border-color: #4da6ff; }
 
   .table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid #1e3a5f; }
-  table { width: 100%; border-collapse: collapse; min-width: 560px; }
+  table { width: 100%; border-collapse: collapse; min-width: 500px; }
   thead { background: #1a2a44; }
-  th { padding: 10px 12px; font-size: 0.75rem; color: #7a8fa8; text-align: left; }
-  td { padding: 9px 12px; font-size: 0.8rem; border-top: 1px solid #1e2d42; }
-  tr:hover td { background: #131e30; }
-  .status-issued { background: #052e16; color: #4ade80; padding: 2px 8px; border-radius: 20px; font-size: 0.72rem; }
-  .status-returned { background: #1e3a5f; color: #60a5fa; padding: 2px 8px; border-radius: 20px; font-size: 0.72rem; }
-  .btn-return { background: #064e3b; border: none; color: #6ee7b7; padding: 4px 10px; border-radius: 5px; font-size: 0.75rem; cursor: pointer; }
-  .btn-delete { background: #7f1d1d; border: none; color: #fca5a5; padding: 4px 10px; border-radius: 5px; font-size: 0.75rem; cursor: pointer; margin-left: 4px; }
+  th { padding: 9px 10px; font-size: 0.72rem; color: #7a8fa8; text-align: left; }
+  td { padding: 9px 10px; font-size: 0.8rem; border-top: 1px solid #1e2d42; }
+  tr:hover { background: #111d30; }
 
-  .person-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .person-card { background: #111827; border: 1px solid #1e3a5f; border-radius: 10px; padding: 14px; }
-  .person-card .name { font-size: 0.9rem; font-weight: 600; color: #e0e6f0; }
-  .person-card .rank { font-size: 0.72rem; color: #4da6ff; margin-bottom: 6px; }
-  .person-card .info { font-size: 0.72rem; color: #7a8fa8; }
-  .person-card .armed { display: inline-block; margin-top: 6px; background: #052e16; color: #4ade80; padding: 2px 8px; border-radius: 20px; font-size: 0.7rem; }
-  .person-card .unarmed { display: inline-block; margin-top: 6px; background: #1e2d42; color: #94a3b8; padding: 2px 8px; border-radius: 20px; font-size: 0.7rem; }
+  .status-issued { background: #1e3a5f; color: #60a5fa; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: 600; }
+  .status-returned { background: #14532d; color: #4ade80; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: 600; }
+  .btn-return { background: #14532d; border: none; color: #4ade80; padding: 4px 10px; border-radius: 5px; font-size: 0.72rem; cursor: pointer; }
+  .btn-delete { background: #7f1d1d; border: none; color: #fca5a5; padding: 4px 8px; border-radius: 5px; font-size: 0.7rem; cursor: pointer; }
+  .btn-edit { background: #78350f; border: none; color: #fcd34d; padding: 4px 8px; border-radius: 5px; font-size: 0.7rem; cursor: pointer; margin-right: 3px; }
 
-  .date-header { font-size: 0.72rem; color: #7a8fa8; margin-bottom: 12px; text-align: right; }
-  .section-title { font-size: 0.8rem; color: #4da6ff; font-weight: 600; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .person-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .person-card { background: #111827; border: 1px solid #1e3a5f; border-radius: 10px; padding: 12px; }
+  .person-card .rank { font-size: 0.68rem; color: #7a8fa8; }
+  .person-card .name { font-size: 0.9rem; font-weight: 600; color: #e0e6f0; margin: 2px 0; }
+  .person-card .info { font-size: 0.7rem; color: #7a8fa8; }
+  .armed { color: #f87171; font-size: 0.72rem; font-weight: 600; }
+  .unarmed { color: #4ade80; font-size: 0.72rem; font-weight: 600; }
 
-  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #1a56db; color: #fff; padding: 10px 22px; border-radius: 8px; font-size: 0.85rem; z-index: 9999; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
-  .toast.show { opacity: 1; }
+  .admin-section { background: #111827; border: 1px solid #3b1a1a; border-radius: 10px; padding: 14px; margin-bottom: 14px; }
+  .admin-section h3 { font-size: 0.88rem; color: #f87171; margin-bottom: 10px; }
+  .pwd-change input { width: 100%; padding: 9px 10px; margin-bottom: 8px; background: #1e2d42; border: 1px solid #2a4060; border-radius: 6px; color: #e0e6f0; font-size: 0.85rem; outline: none; }
+  .pwd-change input:focus { border-color: #4da6ff; }
+  .pwd-change select { width: 100%; padding: 9px 10px; margin-bottom: 8px; background: #1e2d42; border: 1px solid #2a4060; border-radius: 6px; color: #e0e6f0; font-size: 0.85rem; outline: none; }
 
-  .admin-section { background: #111827; border: 1px solid #7f1d1d; border-radius: 10px; padding: 16px; margin-bottom: 14px; }
-  .admin-section h3 { font-size: 0.9rem; color: #f87171; margin-bottom: 12px; }
-  .pwd-change { display: flex; flex-direction: column; gap: 8px; }
-  .pwd-change input { padding: 8px 10px; background: #1e2d42; border: 1px solid #2a4060; border-radius: 6px; color: #e0e6f0; font-size: 0.85rem; outline: none; }
-  .btn-danger { background: #7f1d1d; border: none; color: #fca5a5; padding: 10px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; width: 100%; }
+  .log-entry { padding: 6px 0; border-bottom: 1px solid #1e2d42; font-size: 0.75rem; }
+  .log-time { color: #7a8fa8; }
+  .log-user { color: #4da6ff; font-weight: 600; }
 
-  .user-section { background: #111827; border: 1px solid #1e3a5f; border-radius: 10px; padding: 16px; margin-bottom: 14px; }
-  .user-section h3 { font-size: 0.9rem; color: #4da6ff; margin-bottom: 12px; }
-  .sync-indicator { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; color: #4ade80; margin-bottom: 8px; }
-  .sync-dot { width: 8px; height: 8px; background: #4ade80; border-radius: 50%; animation: pulse 2s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  .user-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #1e2d42; }
+  .user-info { font-size: 0.82rem; }
+  .user-actions { display: flex; gap: 4px; }
+
+  #toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: #1a3a5c; color: #e0e6f0; padding: 10px 20px; border-radius: 20px; font-size: 0.85rem; transition: transform 0.3s; z-index: 9999; white-space: nowrap; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+  #toast.show { transform: translateX(-50%) translateY(0); }
+
+  .info-box { background: #1a2a44; border: 1px solid #2a4060; border-radius: 8px; padding: 12px; margin-bottom: 12px; font-size: 0.78rem; color: #7a8fa8; }
+  .info-box strong { color: #4da6ff; }
+
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 500; align-items: center; justify-content: center; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: #111827; border: 1px solid #1e3a5f; border-radius: 12px; padding: 20px; width: 90%; max-width: 340px; }
+  .modal h3 { color: #4da6ff; margin-bottom: 14px; font-size: 0.95rem; }
+  .modal input, .modal select { width: 100%; padding: 9px 10px; margin-bottom: 10px; background: #1e2d42; border: 1px solid #2a4060; border-radius: 6px; color: #e0e6f0; font-size: 0.85rem; outline: none; }
+  .modal-btns { display: flex; gap: 8px; margin-top: 4px; }
+  .modal-btns button { flex: 1; padding: 9px; border: none; border-radius: 7px; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+  .modal-btns .btn-confirm { background: #1a56db; color: #fff; }
+  .modal-btns .btn-cancel { background: #1e2d42; color: #7a8fa8; }
 </style>
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#1a56db">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Kote 9M">
-  <link rel="apple-touch-icon" href="icon-192.png">
 </head>
 <body>
 
-<!-- LOADING -->
 <div id="loadingScreen" style="display:flex">
   <div class="spinner"></div>
-  <p style="color:#7a8fa8;font-size:0.85rem">Connecting...</p>
+  <p style="color:#7a8fa8;font-size:0.85rem">Loading...</p>
 </div>
 
 <!-- LOGIN -->
 <div id="loginScreen" style="display:none">
   <div class="login-box">
-    <div class="emblem"><img src="icon-192.png" style="width:80px;height:80px;border-radius:50%;object-fit:cover"></div>
+    <div class="login-logo">
+      <img src="icon-512.png" alt="9M" onerror="this.style.display='none'">
+    </div>
     <h2>KOTE 9 MAHAR</h2>
     <p>Daily Arms Register System</p>
     <input type="text" id="loginUser" placeholder="Username" autocomplete="off">
-    <input type="password" id="loginPass" placeholder="Password">
+    <input type="password" id="loginPwd" placeholder="Password">
     <button onclick="doLogin()">LOGIN</button>
     <div id="loginError"></div>
-    <div id="loginAttempts" class="login-attempts"></div>
-    <div id="lockoutMsg" class="lockout-msg" style="display:none">
-      🔒 Account locked! 3 wrong attempts.<br>Try again after <span id="lockoutTimer">30</span> seconds.
-    </div>
   </div>
 </div>
 
@@ -162,22 +176,25 @@
 <div id="appScreen">
   <header>
     <div class="header-left">
-      <h1>🪖 KOTE 9 MAHAR</h1>
-      <p>Daily Arms Register</p>
+      <img src="icon-192.png" alt="9M" onerror="this.style.display='none'">
+      <div>
+        <h1>🪖 KOTE 9 MAHAR</h1>
+        <p>Daily Arms Register</p>
+      </div>
     </div>
     <div class="header-right">
-      <span class="badge" id="userBadge">USER</span>
+      <span class="badge" id="headerBadge">ADMIN: admin</span>
       <button class="btn-logout" onclick="doLogout()">Logout</button>
     </div>
   </header>
 
   <div class="tabs">
-    <button class="tab active" onclick="showTab('dashboard',this)">Dashboard</button>
-    <button class="tab" onclick="showTab('issue',this)">Issue Arm</button>
-    <button class="tab" onclick="showTab('register',this)">Register</button>
-    <button class="tab" onclick="showTab('personnel',this)">Personnel</button>
-    <button class="tab" onclick="showTab('profile',this)">My Profile</button>
-    <button class="tab" id="adminTab" onclick="showTab('admin',this)" style="display:none">Admin</button>
+    <button class="tab active" onclick="showTab('dashboard',this)">📊 Dashboard</button>
+    <button class="tab" onclick="showTab('issue',this)">🔫 Issue Arm</button>
+    <button class="tab" onclick="showTab('register',this)">📋 Register</button>
+    <button class="tab" onclick="showTab('personnel',this)">👥 Personnel</button>
+    <button class="tab" onclick="showTab('profile',this)">👤 Profile</button>
+    <button class="tab" id="adminTab" onclick="showTab('admin',this)" style="display:none">🔴 Admin</button>
   </div>
 
   <!-- DASHBOARD -->
@@ -193,7 +210,7 @@
     <div class="section-title">Today's Issued Arms</div>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>Soldier</th><th>Weapon</th><th>Weapon No.</th><th>Time</th><th>Status</th></tr></thead>
+        <thead><tr><th>Soldier</th><th>Weapon</th><th>Serial No.</th><th>Time</th><th>Status</th></tr></thead>
         <tbody id="dashTable"></tbody>
       </table>
     </div>
@@ -202,12 +219,12 @@
   <!-- ISSUE ARM -->
   <div class="tab-content" id="tab-issue">
     <div class="form-card">
-      <h3>Issue Arm to Personnel</h3>
+      <h3>🔫 Issue Arm to Personnel</h3>
+      <div class="form-group">
+        <label>Select Personnel</label>
+        <select id="issuePerson"></select>
+      </div>
       <div class="form-row">
-        <div class="form-group">
-          <label>Select Personnel</label>
-          <select id="issuePerson"></select>
-        </div>
         <div class="form-group">
           <label>Weapon Type</label>
           <select id="issueWeapon" onchange="weaponSelectChange()">
@@ -224,22 +241,22 @@
             <option>81mm Mortar</option>
             <option>Other (Type below)</option>
           </select>
-          <input type="text" id="issueWeaponCustom" placeholder="Type weapon name..." style="display:none;margin-top:6px;padding:8px 10px;background:#1e2d42;border:1px solid #2a4060;border-radius:6px;color:#e0e6f0;font-size:0.85rem;outline:none;width:100%">
         </div>
-      </div>
-      <div class="form-row">
         <div class="form-group">
           <label>Weapon Serial No.</label>
           <input type="text" id="issueSerial" placeholder="e.g. RI-2024-001">
         </div>
+      </div>
+      <input type="text" id="issueWeaponCustom" placeholder="Type weapon name..." style="display:none;width:100%;padding:9px 10px;background:#1e2d42;border:1px solid #2a4060;border-radius:6px;color:#e0e6f0;font-size:0.85rem;outline:none;margin-bottom:10px">
+      <div class="form-row">
         <div class="form-group">
-          <label>Duty/Purpose</label>
+          <label>Duty / Purpose</label>
           <input type="text" id="issueDuty" placeholder="e.g. Sentry Duty">
         </div>
-      </div>
-      <div class="form-group" style="margin-bottom:12px">
-        <label>Rounds Issued</label>
-        <input type="number" id="issueRounds" placeholder="0" min="0">
+        <div class="form-group">
+          <label>Rounds Issued</label>
+          <input type="number" id="issueRounds" placeholder="0" min="0">
+        </div>
       </div>
       <button class="btn-primary" onclick="issueArm()">✅ Issue Arm</button>
     </div>
@@ -248,11 +265,11 @@
   <!-- REGISTER -->
   <div class="tab-content" id="tab-register">
     <div class="search-bar">
-      <input type="text" id="searchInput" placeholder="Search by name, weapon, serial..." oninput="renderRegister()">
+      <input type="text" id="searchInput" placeholder="Search soldier, weapon, serial..." oninput="renderRegister()">
     </div>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>Soldier</th><th>Weapon</th><th>Serial No.</th><th>Duty</th><th>Issue Time</th><th>Return Time</th><th>Status</th><th>Action</th></tr></thead>
+        <thead><tr><th>Soldier</th><th>Weapon</th><th>Serial</th><th>Duty</th><th>Issued</th><th>Returned</th><th>Status</th><th>Action</th></tr></thead>
         <tbody id="registerTable"></tbody>
       </table>
     </div>
@@ -261,7 +278,7 @@
   <!-- PERSONNEL -->
   <div class="tab-content" id="tab-personnel">
     <div class="form-card" id="addPersonnelForm">
-      <h3>Add Personnel <span id="personnelCompanyLabel" style="font-size:0.75rem;color:#7a8fa8"></span></h3>
+      <h3>➕ Add Personnel <span id="personnelCompanyLabel" style="font-size:0.72rem;color:#7a8fa8"></span></h3>
       <div class="form-row">
         <div class="form-group">
           <label>Full Name</label>
@@ -283,8 +300,6 @@
             <option>Major</option>
             <option>Lieutenant Colonel</option>
             <option>Colonel</option>
-            <option>Brigadier</option>
-            <option>Major General</option>
           </select>
         </div>
       </div>
@@ -304,146 +319,180 @@
     <div class="person-grid" id="personnelGrid"></div>
   </div>
 
-  <!-- MY PROFILE (Password Change for all users) -->
+  <!-- MY PROFILE -->
   <div class="tab-content" id="tab-profile">
-    <div class="user-section">
+    <div class="form-card">
       <h3>👤 My Profile</h3>
-      <p style="font-size:0.78rem;color:#7a8fa8;margin-bottom:14px">Logged in as: <span id="profileUsername" style="color:#4da6ff;font-weight:600"></span></p>
+      <div class="info-box">
+        Logged in as: <strong id="profileUsername"></strong><br>
+        Role: <strong id="profileRole"></strong><br>
+        Company: <strong id="profileCompany"></strong>
+      </div>
+      <h3 style="margin-bottom:10px;font-size:0.85rem">🔑 Change My Password</h3>
       <div class="pwd-change">
-        <label style="font-size:0.75rem;color:#7a8fa8">Current Password</label>
-        <input type="password" id="currentPwd" placeholder="Enter current password">
-        <label style="font-size:0.75rem;color:#7a8fa8;margin-top:4px">New Password</label>
+        <input type="password" id="currentPwd" placeholder="Current Password">
         <input type="password" id="myNewPwd1" placeholder="New Password">
         <input type="password" id="myNewPwd2" placeholder="Confirm New Password">
-        <button class="btn-primary" onclick="changeMyPassword()" style="margin-top:4px">🔑 Change My Password</button>
+        <button class="btn-primary" onclick="changeMyPassword()">🔑 Change Password</button>
       </div>
     </div>
   </div>
 
   <!-- ADMIN -->
   <div class="tab-content" id="tab-admin">
+    <!-- Change Admin Password -->
     <div class="admin-section">
-      <h3>🔴 Admin Panel</h3>
-      <p style="font-size:0.78rem;color:#7a8fa8;margin-bottom:14px">Only admin can access this panel.</p>
+      <h3>🔑 Change Admin Password</h3>
       <div class="pwd-change">
-        <label style="font-size:0.75rem;color:#7a8fa8">Change Admin Password</label>
         <input type="password" id="newPwd1" placeholder="New Password">
         <input type="password" id="newPwd2" placeholder="Confirm Password">
         <button class="btn-danger" onclick="changePassword()">🔑 Change Admin Password</button>
       </div>
     </div>
-    <div class="admin-section">
-      <h3>📋 Login Activity Log</h3>
-      <div id="activityLog" style="max-height:200px;overflow-y:auto"></div>
-      <button class="btn-danger" style="margin-top:10px" onclick="clearActivityLog()">🗑️ Clear Log</button>
-    </div>
 
+    <!-- Manage Users -->
     <div class="admin-section">
-      <h3>🗑️ Clear All Records</h3>
-      <p style="font-size:0.78rem;color:#7a8fa8;margin-bottom:10px">This will delete all issue records permanently.</p>
-      <button class="btn-danger" onclick="clearAllRecords()">⚠️ Clear All Records</button>
-    </div>
-    <div class="admin-section">
-      <h3>👤 Add Login User</h3>
-      <div style="display:flex;flex-direction:column;gap:8px">
-        <input type="text" id="newUsername" placeholder="Username" style="padding:8px 10px;background:#1e2d42;border:1px solid #2a4060;border-radius:6px;color:#e0e6f0;font-size:0.85rem;outline:none">
-        <input type="password" id="newUserPwd" placeholder="Password" style="padding:8px 10px;background:#1e2d42;border:1px solid #2a4060;border-radius:6px;color:#e0e6f0;font-size:0.85rem;outline:none">
-        <select id="newUserRole" style="padding:8px 10px;background:#1e2d42;border:1px solid #2a4060;border-radius:6px;color:#e0e6f0;font-size:0.85rem;outline:none">
+      <h3>👥 Manage Login Users</h3>
+      <div class="pwd-change">
+        <input type="text" id="newUsername" placeholder="Username (e.g. bcoy)" autocomplete="off">
+        <input type="password" id="newUserPwd" placeholder="Password">
+        <select id="newUserRole">
           <option value="user">User</option>
           <option value="admin">Admin</option>
         </select>
-        <select id="newUserCompany" style="padding:8px 10px;background:#1e2d42;border:1px solid #2a4060;border-radius:6px;color:#e0e6f0;font-size:0.85rem;outline:none">
+        <select id="newUserCompany">
           <option value="all">All Companies (Admin)</option>
           <option value="Alpha Coy">Alpha Coy</option>
           <option value="Bravo Coy">Bravo Coy</option>
           <option value="Charlie Coy">Charlie Coy</option>
           <option value="Delta Coy">Delta Coy</option>
           <option value="HQ Coy">HQ Coy</option>
-          <option value="Sp Coy">Sp Coy</option>
+          <option value="Support Coy">Support Coy</option>
         </select>
         <button class="btn-primary" onclick="addUser()">➕ Add User</button>
       </div>
-      <div style="margin-top:12px" id="userList"></div>
+      <div id="userList" style="margin-top:12px"></div>
+    </div>
+
+    <!-- Reset User Password -->
+    <div class="admin-section">
+      <h3>🔓 Reset User Password</h3>
+      <div class="pwd-change">
+        <select id="resetUserSelect">
+          <option value="">-- Select User --</option>
+        </select>
+        <input type="password" id="resetNewPwd" placeholder="New Password for selected user">
+        <button class="btn-warning" onclick="adminResetPassword()" style="width:100%;padding:9px">🔓 Reset Password</button>
+      </div>
+    </div>
+
+    <!-- Activity Log -->
+    <div class="admin-section">
+      <h3>📋 Login Activity Log</h3>
+      <div id="activityLog" style="max-height:200px;overflow-y:auto"></div>
+      <button class="btn-danger" style="margin-top:10px" onclick="clearActivityLog()">🗑️ Clear Log</button>
+    </div>
+
+    <!-- Clear All Records -->
+    <div class="admin-section">
+      <h3>⚠️ Danger Zone</h3>
+      <button class="btn-danger" onclick="clearAllRecords()">⚠️ Clear All Records</button>
     </div>
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
+<div id="toast"></div>
 
-<!-- FIREBASE -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
-import { getDatabase, ref, set, get, onValue, remove } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
+<!-- Password Reset Modal -->
+<div class="modal-overlay" id="resetModal">
+  <div class="modal">
+    <h3>🔓 Reset Password</h3>
+    <p style="font-size:0.78rem;color:#7a8fa8;margin-bottom:12px">User: <strong id="resetModalUser" style="color:#4da6ff"></strong></p>
+    <input type="password" id="resetModalPwd1" placeholder="New Password">
+    <input type="password" id="resetModalPwd2" placeholder="Confirm Password">
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeResetModal()">Cancel</button>
+      <button class="btn-confirm" onclick="confirmResetPassword()">Reset</button>
+    </div>
+  </div>
+</div>
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDpf2ToxcunS8BVRKktMpAYklc73ZhOB8w",
-  authDomain: "m-kote-fedda.firebaseapp.com",
-  databaseURL: "https://m-kote-fedda-default-rtdb.firebaseio.com",
-  projectId: "m-kote-fedda",
-  storageBucket: "m-kote-fedda.firebasestorage.app",
-  messagingSenderId: "235136869475",
-  appId: "1:235136869475:web:6722e739ff74a4b3f10456",
-  measurementId: "G-VYRF2PL9VL"
-};
+<script>
+// ============================================================
+// FIREBASE CONFIG
+// ============================================================
+const DB_URL = 'https://m-kote-fedda-default-rtdb.firebaseio.com';
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-
-// ---- DB HELPERS ----
 async function dbGet(path) {
-  const snap = await get(ref(db, path));
-  return snap.exists() ? snap.val() : null;
+  const res = await fetch(`${DB_URL}/${path}.json`);
+  if (!res.ok) throw new Error('DB read failed: ' + res.status);
+  return res.json();
 }
-async function dbSet(path, val) {
-  await set(ref(db, path), val);
+async function dbSet(path, value) {
+  const res = await fetch(`${DB_URL}/${path}.json`, {
+    method: 'PUT', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(value)
+  });
+  if (!res.ok) throw new Error('DB write failed: ' + res.status);
+  return res.json();
 }
 async function dbRemove(path) {
-  await remove(ref(db, path));
+  const res = await fetch(`${DB_URL}/${path}.json`, { method: 'DELETE' });
+  if (!res.ok) throw new Error('DB delete failed: ' + res.status);
+  return res.json();
 }
 function dbListen(path, cb) {
-  onValue(ref(db, path), snap => cb(snap.exists() ? snap.val() : null));
+  const es = new EventSource(`${DB_URL}/${path}.json`);
+  es.addEventListener('put', e => { try { cb(JSON.parse(e.data).data); } catch(err){} });
+  return es;
 }
 
-// ---- STATE ----
+// ============================================================
+// STATE
+// ============================================================
 let currentUser = null;
 let allUsers = {};
 let allRecords = {};
 let allPersonnel = {};
 
-// ---- INIT DEFAULTS ----
+// ============================================================
+// INIT DEFAULTS
+// ============================================================
 async function initDefaults() {
   const users = await dbGet('users');
   if (!users) {
     await dbSet('users', {
-      admin: { password: 'kote@9m', role: 'admin' },
-      jco: { password: 'jco123', role: 'user' }
+      admin: { password: '9mahar', role: 'admin', company: 'all' },
+      jco: { password: 'jco123', role: 'user', company: 'all' }
     });
   }
   const personnel = await dbGet('personnel');
   if (!personnel) {
     await dbSet('personnel', {
       p1: { name: 'Ramesh Kumar', rank: 'Sepoy', armyNo: '1234567', company: 'Alpha Coy' },
-      p2: { name: 'Suresh Singh', rank: 'Naik', armyNo: '2345678', company: 'Bravo Coy' },
-      p3: { name: 'Mohan Lal', rank: 'Havildar', armyNo: '3456789', company: 'Alpha Coy' }
+      p2: { name: 'Suresh Singh', rank: 'Naik', armyNo: '2345678', company: 'Bravo Coy' }
     });
   }
 }
 
-// ---- STARTUP ----
+// ============================================================
+// STARTUP
+// ============================================================
 window.addEventListener('load', async () => {
   await initDefaults();
   document.getElementById('loadingScreen').style.display = 'none';
   document.getElementById('loginScreen').style.display = 'flex';
 
-  // Load from local cache first (offline support)
   const cachedUsers = localStorage.getItem('cache_users');
   const cachedRecords = localStorage.getItem('cache_records');
   const cachedPersonnel = localStorage.getItem('cache_personnel');
   if (cachedUsers) allUsers = JSON.parse(cachedUsers);
-  if (cachedRecords) { allRecords = JSON.parse(cachedRecords); renderDashboard(); renderRegister(); }
-  if (cachedPersonnel) { allPersonnel = JSON.parse(cachedPersonnel); renderPersonnelGrid(); populatePersonnelSelect(); document.getElementById('statPersonnel').textContent = Object.keys(allPersonnel).length; }
+  if (cachedRecords) { allRecords = JSON.parse(cachedRecords); }
+  if (cachedPersonnel) {
+    allPersonnel = JSON.parse(cachedPersonnel);
+    document.getElementById('statPersonnel').textContent = Object.keys(allPersonnel).length;
+  }
 
-  // Live listeners - sync from Firebase and update cache
   dbListen('users', val => {
     allUsers = val || {};
     localStorage.setItem('cache_users', JSON.stringify(allUsers));
@@ -456,298 +505,233 @@ window.addEventListener('load', async () => {
   dbListen('personnel', val => {
     allPersonnel = val || {};
     localStorage.setItem('cache_personnel', JSON.stringify(allPersonnel));
-    console.log('Personnel loaded:', Object.keys(allPersonnel).length, allPersonnel);
-    renderPersonnelGrid(); 
+    renderPersonnelGrid();
     populatePersonnelSelect();
     document.getElementById('statPersonnel').textContent = Object.keys(allPersonnel).length;
   });
 });
 
-// ---- LOGIN ----
-// ---- SECURITY ----
+// ============================================================
+// SECURITY
+// ============================================================
 const MAX_ATTEMPTS = 3;
-const LOCKOUT_TIME = 30; // seconds
-const SESSION_TIMEOUT = 30 * 60 * 1000; // 30 minutes
+const LOCKOUT_TIME = 30;
+const SESSION_TIMEOUT = 30 * 60 * 1000;
 let sessionTimer = null;
 let sessionExpiry = null;
 
-function getLoginAttempts(username) {
-  const data = JSON.parse(localStorage.getItem('login_attempts') || '{}');
-  return data[username] || { count: 0, lockedUntil: 0 };
+function getLoginAttempts(u) {
+  return (JSON.parse(localStorage.getItem('login_attempts') || '{}'))[u] || { count: 0, lockedUntil: 0 };
 }
-
-function setLoginAttempts(username, data) {
+function setLoginAttempts(u, data) {
   const all = JSON.parse(localStorage.getItem('login_attempts') || '{}');
-  all[username] = data;
-  localStorage.setItem('login_attempts', JSON.stringify(all));
+  all[u] = data; localStorage.setItem('login_attempts', JSON.stringify(all));
 }
-
-function resetLoginAttempts(username) {
+function resetLoginAttempts(u) {
   const all = JSON.parse(localStorage.getItem('login_attempts') || '{}');
-  delete all[username];
-  localStorage.setItem('login_attempts', JSON.stringify(all));
+  delete all[u]; localStorage.setItem('login_attempts', JSON.stringify(all));
 }
-
 function logActivity(username, action, success) {
   const logs = JSON.parse(localStorage.getItem('activity_log') || '[]');
-  logs.unshift({
-    time: new Date().toISOString(),
-    username, action, success,
-    device: navigator.userAgent.includes('Mobile') ? 'Mobile' : 'Desktop'
-  });
-  // Keep only last 50 logs
+  logs.unshift({ time: new Date().toISOString(), username, action, success, device: navigator.userAgent.includes('Mobile') ? 'Mobile' : 'Desktop' });
   if (logs.length > 50) logs.pop();
   localStorage.setItem('activity_log', JSON.stringify(logs));
-  // Also save to Firebase
-  dbSet('logs/' + Date.now(), { time: new Date().toISOString(), username, action, success });
+  dbSet('logs/' + Date.now(), { time: new Date().toISOString(), username, action, success }).catch(()=>{});
 }
-
 function startSessionTimer() {
   clearInterval(sessionTimer);
   sessionExpiry = Date.now() + SESSION_TIMEOUT;
   sessionTimer = setInterval(() => {
-    const remaining = sessionExpiry - Date.now();
-    if (remaining <= 0) {
+    if (Date.now() >= sessionExpiry) {
       clearInterval(sessionTimer);
       showToast('Session expired! Please login again.');
       setTimeout(() => doLogout(), 1500);
     }
-  }, 1000);
-
-  // Reset timer on user activity
-  ['click', 'touchstart', 'keydown'].forEach(evt => {
-    document.addEventListener(evt, () => {
-      if (currentUser) sessionExpiry = Date.now() + SESSION_TIMEOUT;
-    }, { passive: true });
-  });
+  }, 10000);
 }
+function resetSessionTimer() { if (sessionExpiry) sessionExpiry = Date.now() + SESSION_TIMEOUT; }
+document.addEventListener('touchstart', resetSessionTimer);
+document.addEventListener('click', resetSessionTimer);
 
+// ============================================================
+// LOGIN / LOGOUT
+// ============================================================
 window.doLogin = async function() {
-  const u = document.getElementById('loginUser').value.trim();
-  const p = document.getElementById('loginPass').value;
-  const errDiv = document.getElementById('loginError');
-  const attemptsDiv = document.getElementById('loginAttempts');
-  const lockoutMsg = document.getElementById('lockoutMsg');
+  const username = document.getElementById('loginUser').value.trim();
+  const password = document.getElementById('loginPwd').value;
+  const errEl = document.getElementById('loginError');
+  errEl.textContent = '';
+  if (!username || !password) { errEl.textContent = 'Enter username and password'; return; }
 
-  if (!u || !p) { errDiv.textContent = 'Enter username and password!'; return; }
-
-  // Check lockout
-  const attempts = getLoginAttempts(u);
+  const attempts = getLoginAttempts(username);
   if (attempts.lockedUntil > Date.now()) {
-    const remaining = Math.ceil((attempts.lockedUntil - Date.now()) / 1000);
-    lockoutMsg.style.display = 'block';
-    document.getElementById('lockoutTimer').textContent = remaining;
-    const countdown = setInterval(() => {
-      const r = Math.ceil((attempts.lockedUntil - Date.now()) / 1000);
-      if (r <= 0) {
-        clearInterval(countdown);
-        lockoutMsg.style.display = 'none';
-        resetLoginAttempts(u);
-      } else {
-        document.getElementById('lockoutTimer').textContent = r;
-      }
-    }, 1000);
+    const secs = Math.ceil((attempts.lockedUntil - Date.now()) / 1000);
+    errEl.textContent = `🔒 Account locked! 3 wrong attempts.\nTry again after ${secs} seconds.`;
     return;
   }
 
-  let users = null;
-  if (navigator.onLine) {
-    users = await dbGet('users');
-    if (users) localStorage.setItem('cache_users', JSON.stringify(users));
-  } else {
-    const cached = localStorage.getItem('cache_users');
-    if (cached) users = JSON.parse(cached);
-  }
-  if (users && users[u] && users[u].password === p) {
-    resetLoginAttempts(u);
-    logActivity(u, 'LOGIN', true);
-    startSessionTimer();
-    currentUser = { username: u, ...users[u], company: users[u].company || 'all' };
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('appScreen').style.display = 'block';
-    const companyLabel = users[u].company && users[u].company !== 'all' ? ' | ' + users[u].company : '';
-    document.getElementById('userBadge').textContent = users[u].role.toUpperCase() + ': ' + u + companyLabel;
-    document.getElementById('profileUsername').textContent = u;
-    if (users[u].role === 'admin') document.getElementById('adminTab').style.display = 'block';
-    else document.getElementById('adminTab').style.display = 'none';
-    init();
-  } else {
-    // Failed login
-    logActivity(u, 'FAILED LOGIN', false);
-    const att = getLoginAttempts(u);
-    att.count = (att.count || 0) + 1;
-    const remaining = MAX_ATTEMPTS - att.count;
-    if (att.count >= MAX_ATTEMPTS) {
-      att.lockedUntil = Date.now() + (LOCKOUT_TIME * 1000);
-      setLoginAttempts(u, att);
-      document.getElementById('lockoutMsg').style.display = 'block';
-      document.getElementById('lockoutTimer').textContent = LOCKOUT_TIME;
-      errDiv.textContent = '';
-      attemptsDiv.textContent = '';
+  const users = await dbGet('users').catch(() => allUsers);
+  const user = users && users[username];
+  if (!user || user.password !== password) {
+    const newCount = (attempts.count || 0) + 1;
+    if (newCount >= MAX_ATTEMPTS) {
+      setLoginAttempts(username, { count: newCount, lockedUntil: Date.now() + LOCKOUT_TIME * 1000 });
+      errEl.textContent = `🔒 Account locked! 3 wrong attempts.\nTry again after ${LOCKOUT_TIME} seconds.`;
     } else {
-      setLoginAttempts(u, att);
-      errDiv.textContent = 'Invalid credentials!';
-      attemptsDiv.textContent = `⚠️ ${remaining} attempt${remaining>1?'s':''} remaining before lockout`;
+      setLoginAttempts(username, { count: newCount, lockedUntil: 0 });
+      errEl.textContent = `❌ Wrong password! (${MAX_ATTEMPTS - newCount} attempts left)`;
     }
+    logActivity(username, 'login', false);
+    return;
   }
+
+  resetLoginAttempts(username);
+  logActivity(username, 'login', true);
+  currentUser = { username, ...user };
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('appScreen').style.display = 'block';
+  document.getElementById('loginUser').value = '';
+  document.getElementById('loginPwd').value = '';
+  startSessionTimer();
+  init();
 }
 
 window.doLogout = function() {
-  if (currentUser) logActivity(currentUser.username, 'LOGOUT', true);
   clearInterval(sessionTimer);
+  if (currentUser) logActivity(currentUser.username, 'logout', true);
   currentUser = null;
-  document.getElementById('loginScreen').style.display = 'flex';
   document.getElementById('appScreen').style.display = 'none';
-  document.getElementById('loginUser').value = '';
-  document.getElementById('loginPass').value = '';
-  document.getElementById('loginError').textContent = '';
-  document.getElementById('loginAttempts').textContent = '';
-  document.getElementById('lockoutMsg').style.display = 'none';
-  document.getElementById('adminTab').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+  showTab('dashboard', document.querySelector('.tab'));
 }
 
-// ---- ACTIVITY LOG ----
-window.clearActivityLog = function() {
-  if (!confirm('Clear all activity logs?')) return;
-  localStorage.removeItem('activity_log');
-  dbSet('logs', {});
-  renderActivityLog();
-  showToast('Activity log cleared!');
-}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('loginScreen').style.display !== 'none') doLogin();
+});
 
-async function renderActivityLog() {
-  const div = document.getElementById('activityLog');
-  if (!div) return;
-  
-  // Try Firebase first, fallback to local
-  let logs = [];
-  try {
-    const fbLogs = await dbGet('logs');
-    if (fbLogs) {
-      logs = Object.values(fbLogs).sort((a,b) => new Date(b.time) - new Date(a.time));
-    }
-  } catch(e) {
-    const local = JSON.parse(localStorage.getItem('activity_log') || '[]');
-    logs = local;
-  }
-
-  if (!logs.length) { div.innerHTML = '<p style="color:#7a8fa8;font-size:0.78rem">No activity yet</p>'; return; }
-  
-  div.innerHTML = logs.slice(0, 20).map(l => `
-    <div class="log-entry">
-      <span class="log-time">${new Date(l.time).toLocaleString()}</span><br>
-      <span class="log-user">${l.username}</span>
-      <span class="log-action"> — ${l.action}</span>
-      <span style="color:${l.success ? '#4ade80' : '#f87171'};font-size:0.7rem"> ${l.success ? '✅' : '❌'}</span>
-      <span style="color:#7a8fa8;font-size:0.68rem"> ${l.device || ''}</span>
-    </div>
-  `).join('');
-}
-
-// ---- INIT ----
+// ============================================================
+// INIT AFTER LOGIN
+// ============================================================
 function init() {
   document.getElementById('todayDate').textContent = new Date().toDateString() + ' | ' + new Date().toLocaleTimeString();
+  
+  // Header badge
+  const role = currentUser.role === 'admin' ? 'ADMIN' : 'USER';
+  document.getElementById('headerBadge').textContent = role + ': ' + currentUser.username;
+  
+  // Profile tab
+  document.getElementById('profileUsername').textContent = currentUser.username;
+  document.getElementById('profileRole').textContent = currentUser.role.toUpperCase();
+  document.getElementById('profileCompany').textContent = currentUser.company || 'All';
+
+  // Admin tab visibility
+  const adminTab = document.getElementById('adminTab');
+  adminTab.style.display = currentUser.role === 'admin' ? '' : 'none';
+  if (currentUser.role === 'admin') { renderUserList(); renderActivityLog(); populateResetUserSelect(); }
+
+  // Personnel company label
+  const lbl = document.getElementById('personnelCompanyLabel');
+  if (lbl) {
+    lbl.textContent = currentUser.role === 'admin' ? '(All Companies)' : '(' + (currentUser.company || 'Unassigned') + ')';
+  }
+
+  // Company input for non-admin
+  const companyInput = document.getElementById('pCompany');
+  if (companyInput && currentUser.role !== 'admin') {
+    if (currentUser.company && currentUser.company !== 'all') {
+      companyInput.value = currentUser.company;
+      companyInput.readOnly = true;
+      companyInput.style.opacity = '0.6';
+    } else {
+      const addForm = document.getElementById('addPersonnelForm');
+      if (addForm) addForm.innerHTML = '<p style="color:#f87171;font-size:0.85rem;text-align:center;padding:16px">⚠️ Company not assigned.<br>Contact Admin.</p>';
+    }
+  }
+
   populatePersonnelSelect();
   renderDashboard();
   renderRegister();
   renderPersonnelGrid();
-  if (currentUser.role === 'admin') {
-    renderUserList();
-    // Admin: show admin tab
-    const adminTab = document.getElementById('adminTab');
-    if (adminTab) adminTab.style.display = '';
-  }
-  
-  // Show company label in Personnel header
-  const lbl = document.getElementById('personnelCompanyLabel');
-  if (lbl) {
-    if (currentUser.role === 'admin') {
-      lbl.textContent = '(All Companies)';
-    } else if (currentUser.company && currentUser.company !== 'all') {
-      lbl.textContent = '(' + currentUser.company + ' only)';
-    }
-  }
-  
-  // Company input handling
-  const companyInput = document.getElementById('pCompany');
-  if (companyInput) {
-    if (currentUser.role !== 'admin') {
-      if (currentUser.company && currentUser.company !== 'all') {
-        companyInput.value = currentUser.company;
-        companyInput.readOnly = true;
-        companyInput.style.opacity = '0.6';
-      } else {
-        // No company assigned - hide Add Personnel form entirely
-        const addForm = document.getElementById('addPersonnelForm');
-        if (addForm) {
-          addForm.innerHTML = '<p style="color:#f87171;font-size:0.85rem;text-align:center;padding:10px">⚠️ Company not assigned. Contact Admin to add personnel.</p>';
-        }
-      }
-    }
-  }
 }
 
-// ---- TABS ----
+// ============================================================
+// TABS
+// ============================================================
 window.showTab = function(name, el) {
   document.querySelectorAll('.tab-content').forEach(e => e.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(e => e.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
   if (el) el.classList.add('active');
+  if (name === 'admin') { renderUserList(); renderActivityLog(); populateResetUserSelect(); }
 }
 
-// ---- PERSONNEL SELECT ----
+// ============================================================
+// PERSONNEL SELECT
+// ============================================================
 function populatePersonnelSelect() {
   const sel = document.getElementById('issuePerson');
   if (!sel) return;
-  sel.innerHTML = '';
-  const filteredPersonnel = filterPersonnelByCompany(allPersonnel);
-  Object.entries(filteredPersonnel).forEach(([id, p]) => {
-    sel.innerHTML += `<option value="${id}">${p.rank} ${p.name}</option>`;
-  });
+  const filtered = filterPersonnelByCompany(allPersonnel);
+  sel.innerHTML = Object.keys(filtered).length === 0
+    ? '<option value="">No personnel found</option>'
+    : Object.entries(filtered).map(([id, p]) => `<option value="${id}">${p.rank} ${p.name} (${p.company || '-'})</option>`).join('');
 }
 
-// ---- ISSUE ARM ----
+// ============================================================
+// WEAPON SELECT
+// ============================================================
+window.weaponSelectChange = function() {
+  const sel = document.getElementById('issueWeapon');
+  const custom = document.getElementById('issueWeaponCustom');
+  if (sel.value === 'Other (Type below)') { custom.style.display = 'block'; custom.focus(); }
+  else { custom.style.display = 'none'; custom.value = ''; }
+}
+
+// ============================================================
+// ISSUE ARM
+// ============================================================
 window.issueArm = async function() {
   const pid = document.getElementById('issuePerson').value;
+  if (!pid) { showToast('Personnel select చేయండి!'); return; }
   const weaponSel = document.getElementById('issueWeapon').value;
   const weaponCustom = document.getElementById('issueWeaponCustom').value.trim();
   const weapon = weaponSel === 'Other (Type below)' ? weaponCustom : weaponSel;
-  if (weaponSel === 'Other (Type below)' && !weaponCustom) { showToast('Weapon name type చేయండి!'); return; }
+  if (!weapon) { showToast('Weapon name enter చేయండి!'); return; }
   const serial = document.getElementById('issueSerial').value.trim();
   const duty = document.getElementById('issueDuty').value.trim();
   const rounds = document.getElementById('issueRounds').value;
-  if (!serial) { showToast('Enter weapon serial no.'); return; }
+  if (!serial) { showToast('Serial No. enter చేయండి!'); return; }
   const p = allPersonnel[pid];
   const id = 'r' + Date.now();
   await dbSet('records/' + id, {
     id, personId: pid,
     personName: p ? p.rank + ' ' + p.name : 'Unknown',
-    weapon, serial, duty,
-    rounds: rounds || 0,
-    issuedAt: new Date().toISOString(),
-    returnedAt: null,
-    status: 'Issued'
+    weapon, serial, duty, rounds: rounds || 0,
+    issuedAt: new Date().toISOString(), returnedAt: null, status: 'Issued'
   });
   document.getElementById('issueSerial').value = '';
   document.getElementById('issueWeaponCustom').value = '';
   document.getElementById('issueWeaponCustom').style.display = 'none';
   document.getElementById('issueDuty').value = '';
   document.getElementById('issueRounds').value = '';
-  showToast('Arm issued successfully!');
+  showToast('✅ Arm issued to ' + (p ? p.name : ''));
 }
 
-// ---- RETURN ARM ----
+// ============================================================
+// RETURN ARM
+// ============================================================
 window.returnArm = async function(id) {
   const rec = allRecords[id];
   if (rec) {
-    rec.status = 'Returned';
-    rec.returnedAt = new Date().toISOString();
+    rec.status = 'Returned'; rec.returnedAt = new Date().toISOString();
     await dbSet('records/' + id, rec);
-    showToast('Arm returned!');
+    showToast('✅ Arm returned!');
   }
 }
 
-// ---- DELETE RECORD ----
+// ============================================================
+// DELETE RECORD (Admin only)
+// ============================================================
 window.deleteRecord = async function(id) {
   if (currentUser.role !== 'admin') { showToast('Admin only!'); return; }
   if (!confirm('Delete this record?')) return;
@@ -755,13 +739,14 @@ window.deleteRecord = async function(id) {
   showToast('Record deleted.');
 }
 
-// ---- COMPANY FILTER ----
+// ============================================================
+// COMPANY FILTER
+// ============================================================
 function getUserCompany() {
   if (!currentUser) return 'all';
   if (currentUser.role === 'admin') return 'all';
   return currentUser.company || 'all';
 }
-
 function filterByCompany(records) {
   const company = getUserCompany();
   if (company === 'all') return records;
@@ -770,20 +755,17 @@ function filterByCompany(records) {
     return p && p.company === company;
   });
 }
-
 function filterPersonnelByCompany(personnel) {
   const company = getUserCompany();
   if (company === 'all') return personnel;
   return Object.fromEntries(
-    Object.entries(personnel).filter(([id, p]) => {
-      if (!p) return false;
-      if (!p.company) return true; // no company = show to all
-      return p.company === company;
-    })
+    Object.entries(personnel).filter(([id, p]) => p && (p.company === company || !p.company))
   );
 }
 
-// ---- DASHBOARD ----
+// ============================================================
+// DASHBOARD
+// ============================================================
 function renderDashboard() {
   const records = filterByCompany(Object.values(allRecords));
   const today = new Date().toDateString();
@@ -803,7 +785,9 @@ function renderDashboard() {
   });
 }
 
-// ---- REGISTER ----
+// ============================================================
+// REGISTER
+// ============================================================
 window.renderRegister = function() {
   const q = (document.getElementById('searchInput')?.value || '').toLowerCase();
   let records = filterByCompany(Object.values(allRecords));
@@ -821,8 +805,8 @@ window.renderRegister = function() {
     tbody.innerHTML += `<tr>
       <td>${r.personName}</td><td>${r.weapon}</td><td>${r.serial}</td>
       <td>${r.duty || '-'}</td>
-      <td>${new Date(r.issuedAt).toLocaleDateString()}<br><span style="color:#7a8fa8;font-size:0.7rem">${new Date(r.issuedAt).toLocaleTimeString()}</span></td>
-      <td>${r.returnedAt ? new Date(r.returnedAt).toLocaleDateString() + '<br><span style="color:#7a8fa8;font-size:0.7rem">' + new Date(r.returnedAt).toLocaleTimeString() + '</span>' : '<span style="color:#7a8fa8">-</span>'}</td>
+      <td style="font-size:0.72rem">${new Date(r.issuedAt).toLocaleDateString()}<br>${new Date(r.issuedAt).toLocaleTimeString()}</td>
+      <td style="font-size:0.72rem">${r.returnedAt ? new Date(r.returnedAt).toLocaleDateString() + '<br>' + new Date(r.returnedAt).toLocaleTimeString() : '<span style="color:#7a8fa8">-</span>'}</td>
       <td><span class="status-${r.status.toLowerCase()}">${r.status}</span></td>
       <td>
         ${r.status === 'Issued' ? `<button class="btn-return" onclick="returnArm('${r.id}')">Return</button>` : ''}
@@ -832,32 +816,28 @@ window.renderRegister = function() {
   });
 }
 
-// ---- PERSONNEL ----
+// ============================================================
+// PERSONNEL
+// ============================================================
 window.addPersonnel = async function() {
   const name = document.getElementById('pName').value.trim();
   const rank = document.getElementById('pRank').value;
   const armyNo = document.getElementById('pArmy').value.trim();
   let company = document.getElementById('pCompany').value.trim();
-  
-  // Non-admin: force their own company
+
   if (currentUser.role !== 'admin') {
-    if (!currentUser.company || currentUser.company === 'all') {
-      showToast('Company not assigned! Contact Admin.');
-      return;
-    }
+    if (!currentUser.company || currentUser.company === 'all') { showToast('Company not assigned! Contact Admin.'); return; }
     company = currentUser.company;
   }
-  
   if (!name) { showToast('Name enter చేయండి!'); return; }
   if (!armyNo) { showToast('Army No. enter చేయండి!'); return; }
   if (!company) { showToast('Company enter చేయండి!'); return; }
-  
-  // Check duplicate army no
+
   const existing = Object.values(allPersonnel).find(p => p.armyNo === armyNo);
   if (existing) { showToast('Army No. already exists: ' + existing.name); return; }
-  
-  const id = 'p' + Date.now();
+
   try {
+    const id = 'p' + Date.now();
     await dbSet('personnel/' + id, { name, rank, armyNo, company });
     document.getElementById('pName').value = '';
     document.getElementById('pArmy').value = '';
@@ -865,7 +845,6 @@ window.addPersonnel = async function() {
     showToast('✅ ' + rank + ' ' + name + ' added!');
   } catch(e) {
     showToast('Error: ' + e.message);
-    console.error('addPersonnel error:', e);
   }
 }
 
@@ -874,146 +853,229 @@ function renderPersonnelGrid() {
   if (!grid) return;
   grid.innerHTML = '';
   const records = Object.values(allRecords);
-  const filteredPersonnel = filterPersonnelByCompany(allPersonnel);
-  const entries = Object.entries(filteredPersonnel).filter(([id, p]) => p && p.name);
-  if (entries.length === 0) {
-    grid.innerHTML = '<p style="color:#7a8fa8;font-size:0.85rem;padding:10px">No personnel found</p>';
+  const filtered = filterPersonnelByCompany(allPersonnel);
+  const entries = Object.entries(filtered).filter(([id, p]) => p && p.name);
+  if (!entries.length) {
+    grid.innerHTML = '<p style="color:#7a8fa8;font-size:0.85rem;padding:10px;grid-column:span 2">No personnel found</p>';
     return;
   }
   entries.forEach(([id, p]) => {
     const armed = records.find(r => r.personId === id && r.status === 'Issued');
-    const canDelete = currentUser.role === 'admin' || 
+    const canDelete = currentUser.role === 'admin' ||
       (currentUser.company && currentUser.company !== 'all' && p.company === currentUser.company);
     grid.innerHTML += `<div class="person-card">
       <div class="rank">${p.rank || ''}</div>
       <div class="name">${p.name || ''}</div>
       <div class="info">Army No: ${p.armyNo || '-'}</div>
       <div class="info">${p.company || '-'}</div>
-      <span class="${armed ? 'armed' : 'unarmed'}">${armed ? '🔫 Armed' : '✅ Unarmed'}</span>
-      ${canDelete ? `<button class="btn-delete" style="margin-top:8px;width:100%" onclick="deletePersonnel('${id}', '${p.name}')">🗑️ Remove</button>` : ''}
+      <div style="margin-top:6px"><span class="${armed ? 'armed' : 'unarmed'}">${armed ? '🔫 Armed' : '✅ Unarmed'}</span></div>
+      ${canDelete ? `<button class="btn-delete" style="margin-top:8px;width:100%" onclick="deletePersonnel('${id}','${p.name}')">🗑️ Remove</button>` : ''}
     </div>`;
   });
 }
 
-// ---- MY PASSWORD CHANGE (All Users) ----
+window.deletePersonnel = async function(id, name) {
+  if (!confirm('Remove ' + name + '?')) return;
+  const armed = Object.values(allRecords).find(r => r.personId === id && r.status === 'Issued');
+  if (armed) { showToast('⚠️ Return weapon first!'); return; }
+  try {
+    await dbRemove('personnel/' + id);
+    delete allPersonnel[id];
+    localStorage.setItem('cache_personnel', JSON.stringify(allPersonnel));
+    renderPersonnelGrid();
+    populatePersonnelSelect();
+    document.getElementById('statPersonnel').textContent = Object.keys(allPersonnel).length;
+    showToast('✅ ' + name + ' removed!');
+  } catch(e) { showToast('Error: ' + e.message); }
+}
+
+// ============================================================
+// MY PASSWORD CHANGE
+// ============================================================
 window.changeMyPassword = async function() {
   const current = document.getElementById('currentPwd').value;
   const p1 = document.getElementById('myNewPwd1').value;
   const p2 = document.getElementById('myNewPwd2').value;
-  if (!current) { showToast('Enter current password!'); return; }
+  if (!current) { showToast('Current password enter చేయండి!'); return; }
   const users = await dbGet('users');
   const u = users[currentUser.username];
-  if (!u || u.password !== current) { showToast('Current password wrong!'); return; }
-  if (!p1 || p1 !== p2) { showToast('New passwords do not match!'); return; }
-  if (p1.length < 4) { showToast('Password too short! Min 4 chars.'); return; }
+  if (!u || u.password !== current) { showToast('❌ Current password wrong!'); return; }
+  if (!p1 || p1 !== p2) { showToast('❌ New passwords do not match!'); return; }
+  if (p1.length < 4) { showToast('Password min 4 characters!'); return; }
   await dbSet('users/' + currentUser.username + '/password', p1);
   currentUser.password = p1;
-  showToast('Password changed successfully!');
+  showToast('✅ Password changed!');
   document.getElementById('currentPwd').value = '';
   document.getElementById('myNewPwd1').value = '';
   document.getElementById('myNewPwd2').value = '';
 }
 
-// ---- ADMIN PASSWORD CHANGE ----
+// ============================================================
+// ADMIN - CHANGE OWN PASSWORD
+// ============================================================
 window.changePassword = async function() {
   const p1 = document.getElementById('newPwd1').value;
   const p2 = document.getElementById('newPwd2').value;
-  if (!p1 || p1 !== p2) { showToast('Passwords do not match!'); return; }
+  if (!p1 || p1 !== p2) { showToast('❌ Passwords do not match!'); return; }
+  if (p1.length < 4) { showToast('Password min 4 characters!'); return; }
   await dbSet('users/' + currentUser.username + '/password', p1);
-  showToast('Password changed!');
+  currentUser.password = p1;
+  showToast('✅ Admin password changed!');
   document.getElementById('newPwd1').value = '';
   document.getElementById('newPwd2').value = '';
 }
 
-window.clearAllRecords = async function() {
-  if (!confirm('Delete ALL records? This cannot be undone!')) return;
-  await dbSet('records', {});
-  showToast('All records cleared.');
-}
-
+// ============================================================
+// ADMIN - ADD USER
+// ============================================================
 window.addUser = async function() {
   const u = document.getElementById('newUsername').value.trim();
   const p = document.getElementById('newUserPwd').value;
   const r = document.getElementById('newUserRole').value;
   const company = document.getElementById('newUserCompany').value;
-  if (!u || !p) { showToast('Enter username and password'); return; }
+  if (!u || !p) { showToast('Username and password enter చేయండి!'); return; }
   const users = await dbGet('users');
   if (users && users[u]) { showToast('Username already exists!'); return; }
-  await dbSet('users/' + u, { password: p, role: r, company: company });
+  await dbSet('users/' + u, { password: p, role: r, company });
   document.getElementById('newUsername').value = '';
   document.getElementById('newUserPwd').value = '';
   renderUserList();
-  showToast('User added!');
+  populateResetUserSelect();
+  showToast('✅ User ' + u + ' added!');
 }
 
+// ============================================================
+// ADMIN - DELETE USER
+// ============================================================
 window.deleteUser = async function(username) {
   if (username === 'admin') { showToast('Cannot delete admin!'); return; }
+  if (!confirm('Delete user ' + username + '?')) return;
   await dbRemove('users/' + username);
   renderUserList();
-  showToast('User deleted.');
+  populateResetUserSelect();
+  showToast('✅ User ' + username + ' deleted.');
 }
 
+// ============================================================
+// ADMIN - RENDER USER LIST
+// ============================================================
 async function renderUserList() {
   const users = await dbGet('users');
   const div = document.getElementById('userList');
   if (!div || !users) return;
-  div.innerHTML = '<div style="font-size:0.75rem;color:#7a8fa8;margin-bottom:8px">Existing Users:</div>';
+  div.innerHTML = '<div style="font-size:0.72rem;color:#7a8fa8;margin-bottom:8px;border-bottom:1px solid #1e3a5f;padding-bottom:4px">Existing Users:</div>';
   Object.entries(users).forEach(([uname, udata]) => {
-    div.innerHTML += `<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #1e2d42">
-      <span style="font-size:0.82rem">${uname} <span style="color:#4da6ff;font-size:0.7rem">(${udata.role})</span> <span style="color:#7a8fa8;font-size:0.7rem">${udata.company || 'all'}</span></span>
-      ${uname !== 'admin' ? `<button class="btn-delete" onclick="deleteUser('${uname}')">Del</button>` : ''}
+    div.innerHTML += `<div class="user-row">
+      <div class="user-info">
+        <span style="font-weight:600">${uname}</span>
+        <span style="color:#4da6ff;font-size:0.7rem;margin-left:6px">(${udata.role})</span>
+        <span style="color:#7a8fa8;font-size:0.7rem;margin-left:4px">${udata.company || 'all'}</span>
+      </div>
+      <div class="user-actions">
+        <button class="btn-edit" onclick="openResetModal('${uname}')">🔑 Pwd</button>
+        ${uname !== 'admin' ? `<button class="btn-delete" onclick="deleteUser('${uname}')">Del</button>` : ''}
+      </div>
     </div>`;
   });
 }
 
-// ---- TOAST ----
-window.weaponSelectChange = function() {
-  const sel = document.getElementById('issueWeapon');
-  const custom = document.getElementById('issueWeaponCustom');
-  if (sel.value === 'Other (Type below)') {
-    custom.style.display = 'block';
-    custom.focus();
-  } else {
-    custom.style.display = 'none';
-    custom.value = '';
-  }
+// ============================================================
+// ADMIN - RESET PASSWORD (Modal)
+// ============================================================
+function populateResetUserSelect() {
+  dbGet('users').then(users => {
+    const sel = document.getElementById('resetUserSelect');
+    if (!sel || !users) return;
+    sel.innerHTML = '<option value="">-- Select User --</option>';
+    Object.keys(users).filter(u => u !== 'admin').forEach(u => {
+      sel.innerHTML += `<option value="${u}">${u}</option>`;
+    });
+  });
 }
 
-window.deletePersonnel = async function(id, name) {
-  if (!confirm('Remove ' + name + '?')) return;
-  // Check if armed
-  const armed = Object.values(allRecords).find(r => r.personId === id && r.status === 'Issued');
-  if (armed) { showToast('Return weapon first!'); return; }
-  // Direct Firebase delete using fetch
-  const dbUrl = 'https://m-kote-fedda-default-rtdb.firebaseio.com/personnel/' + id + '.json';
+window.adminResetPassword = async function() {
+  const username = document.getElementById('resetUserSelect').value;
+  const newPwd = document.getElementById('resetNewPwd').value;
+  if (!username) { showToast('User select చేయండి!'); return; }
+  if (!newPwd || newPwd.length < 4) { showToast('Min 4 character password!'); return; }
+  await dbSet('users/' + username + '/password', newPwd);
+  document.getElementById('resetNewPwd').value = '';
+  showToast('✅ ' + username + ' password reset!');
+}
+
+// Modal approach (from user list)
+window.openResetModal = function(username) {
+  document.getElementById('resetModalUser').textContent = username;
+  document.getElementById('resetModalPwd1').value = '';
+  document.getElementById('resetModalPwd2').value = '';
+  document.getElementById('resetModal').classList.add('open');
+  document.getElementById('resetModal').dataset.username = username;
+}
+window.closeResetModal = function() {
+  document.getElementById('resetModal').classList.remove('open');
+}
+window.confirmResetPassword = async function() {
+  const username = document.getElementById('resetModal').dataset.username;
+  const p1 = document.getElementById('resetModalPwd1').value;
+  const p2 = document.getElementById('resetModalPwd2').value;
+  if (!p1 || p1 !== p2) { showToast('❌ Passwords do not match!'); return; }
+  if (p1.length < 4) { showToast('Min 4 characters!'); return; }
+  await dbSet('users/' + username + '/password', p1);
+  closeResetModal();
+  showToast('✅ ' + username + ' password reset done!');
+}
+
+// ============================================================
+// ACTIVITY LOG
+// ============================================================
+async function renderActivityLog() {
+  const div = document.getElementById('activityLog');
+  if (!div) return;
+  let logs = [];
   try {
-    const res = await fetch(dbUrl, { method: 'DELETE' });
-    if (res.ok) {
-      delete allPersonnel[id];
-      // Fix: update localStorage cache so deleted person doesn't come back
-      localStorage.setItem('cache_personnel', JSON.stringify(allPersonnel));
-      renderPersonnelGrid();
-      populatePersonnelSelect();
-      document.getElementById('statPersonnel').textContent = Object.keys(allPersonnel).length;
-      showToast(name + ' removed!');
-    } else {
-      showToast('Delete failed! Status: ' + res.status);
-    }
+    const fbLogs = await dbGet('logs');
+    if (fbLogs) logs = Object.values(fbLogs).sort((a,b) => new Date(b.time) - new Date(a.time));
   } catch(e) {
-    showToast('Network error: ' + e.message);
+    logs = JSON.parse(localStorage.getItem('activity_log') || '[]');
   }
+  if (!logs.length) { div.innerHTML = '<p style="color:#7a8fa8;font-size:0.78rem">No activity yet</p>'; return; }
+  div.innerHTML = logs.slice(0,20).map(l => `
+    <div class="log-entry">
+      <span class="log-time">${new Date(l.time).toLocaleString()}</span><br>
+      <span class="log-user">${l.username}</span>
+      <span class="log-action"> — ${l.action}</span>
+      <span style="color:${l.success?'#4ade80':'#f87171'};font-size:0.7rem"> ${l.success?'✅':'❌'}</span>
+      <span style="color:#7a8fa8;font-size:0.68rem"> ${l.device||''}</span>
+    </div>`).join('');
 }
 
+window.clearActivityLog = async function() {
+  if (!confirm('Clear all logs?')) return;
+  localStorage.removeItem('activity_log');
+  await dbRemove('logs');
+  renderActivityLog();
+  showToast('Log cleared!');
+}
+
+// ============================================================
+// CLEAR ALL RECORDS
+// ============================================================
+window.clearAllRecords = async function() {
+  if (currentUser.role !== 'admin') { showToast('Admin only!'); return; }
+  if (!confirm('Delete ALL records? This cannot be undone!')) return;
+  await dbSet('records', {});
+  showToast('All records cleared.');
+}
+
+// ============================================================
+// TOAST
+// ============================================================
 window.showToast = function(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
+  setTimeout(() => t.classList.remove('show'), 2800);
 }
-
-document.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && document.getElementById('loginScreen').style.display !== 'none') doLogin();
-});
 </script>
 </body>
 </html>
