@@ -456,7 +456,9 @@ window.addEventListener('load', async () => {
   dbListen('personnel', val => {
     allPersonnel = val || {};
     localStorage.setItem('cache_personnel', JSON.stringify(allPersonnel));
-    renderPersonnelGrid(); populatePersonnelSelect();
+    console.log('Personnel loaded:', Object.keys(allPersonnel).length, allPersonnel);
+    renderPersonnelGrid(); 
+    populatePersonnelSelect();
     document.getElementById('statPersonnel').textContent = Object.keys(allPersonnel).length;
   });
 });
@@ -752,7 +754,11 @@ function filterPersonnelByCompany(personnel) {
   const company = getUserCompany();
   if (company === 'all') return personnel;
   return Object.fromEntries(
-    Object.entries(personnel).filter(([id, p]) => p.company === company)
+    Object.entries(personnel).filter(([id, p]) => {
+      if (!p) return false;
+      if (!p.company) return true; // no company = show to all
+      return p.company === company;
+    })
   );
 }
 
@@ -830,15 +836,20 @@ function renderPersonnelGrid() {
   grid.innerHTML = '';
   const records = Object.values(allRecords);
   const filteredPersonnel = filterPersonnelByCompany(allPersonnel);
-  Object.entries(filteredPersonnel).forEach(([id, p]) => {
+  const entries = Object.entries(filteredPersonnel).filter(([id, p]) => p && p.name);
+  if (entries.length === 0) {
+    grid.innerHTML = '<p style="color:#7a8fa8;font-size:0.85rem;padding:10px">No personnel found</p>';
+    return;
+  }
+  entries.forEach(([id, p]) => {
     const armed = records.find(r => r.personId === id && r.status === 'Issued');
     const canDelete = currentUser.role === 'admin' || 
       (currentUser.company && currentUser.company !== 'all' && p.company === currentUser.company);
     grid.innerHTML += `<div class="person-card">
-      <div class="rank">${p.rank}</div>
-      <div class="name">${p.name}</div>
-      <div class="info">Army No: ${p.armyNo}</div>
-      <div class="info">${p.company}</div>
+      <div class="rank">${p.rank || ''}</div>
+      <div class="name">${p.name || ''}</div>
+      <div class="info">Army No: ${p.armyNo || '-'}</div>
+      <div class="info">${p.company || '-'}</div>
       <span class="${armed ? 'armed' : 'unarmed'}">${armed ? '🔫 Armed' : '✅ Unarmed'}</span>
       ${canDelete ? `<button class="btn-delete" style="margin-top:8px;width:100%" onclick="deletePersonnel('${id}', '${p.name}')">🗑️ Remove</button>` : ''}
     </div>`;
