@@ -1,4 +1,6 @@
-const CACHE_NAME = 'kote9m-v2';
+// AUTO VERSION — changes every deploy, forces update on all devices
+const CACHE_VERSION = '1782625689';
+const CACHE_NAME = 'kote9m-' + CACHE_VERSION;
 const urlsToCache = [
   '/9m-kote/',
   '/9m-kote/index.html',
@@ -9,11 +11,9 @@ const urlsToCache = [
 
 self.addEventListener('install', e => {
   e.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      return cache.addAll(urlsToCache);
-    })
+    caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
   );
-  self.skipWaiting();
+  self.skipWaiting(); // Activate immediately
 });
 
 self.addEventListener('activate', e => {
@@ -22,15 +22,14 @@ self.addEventListener('activate', e => {
       Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
     )
   );
-  self.clients.claim();
+  self.clients.claim(); // Take control of all tabs immediately
 });
 
 self.addEventListener('fetch', e => {
-  // Network first, fall back to cache
+  // Network first — always get latest, fall back to cache offline
   e.respondWith(
     fetch(e.request)
       .then(response => {
-        // Cache successful responses
         if (response.ok) {
           const clone = response.clone();
           caches.open(CACHE_NAME).then(cache => cache.put(e.request, clone));
@@ -38,10 +37,14 @@ self.addEventListener('fetch', e => {
         return response;
       })
       .catch(() => {
-        // Offline: serve from cache
         return caches.match(e.request).then(cached => {
           return cached || caches.match('/9m-kote/index.html');
         });
       })
   );
+});
+
+// Notify all open tabs to reload when new version is ready
+self.addEventListener('message', e => {
+  if (e.data === 'skipWaiting') self.skipWaiting();
 });
