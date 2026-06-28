@@ -409,6 +409,12 @@
 
 <div id="toast"></div>
 
+<!-- Auto Update Banner -->
+<div id="updateBanner" style="display:none;position:fixed;top:0;left:0;right:0;z-index:9998;background:#1a56db;color:#fff;padding:10px 16px;align-items:center;justify-content:space-between;font-size:0.85rem;box-shadow:0 2px 8px rgba(0,0,0,0.4)">
+  <span>🔄 New update available!</span>
+  <button onclick="applyUpdate()" style="background:#fff;color:#1a56db;border:none;padding:5px 14px;border-radius:20px;font-weight:700;font-size:0.8rem;cursor:pointer">Update Now</button>
+</div>
+
 <!-- Password Reset Modal -->
 <div class="modal-overlay" id="resetModal">
   <div class="modal">
@@ -615,12 +621,47 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Enter' && document.getElementById('loginScreen').style.display !== 'none') doLogin();
 });
 
-// Service Worker Registration (PWA Install)
+// Service Worker Registration + Auto Update
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/9m-kote/sw.js')
-      .then(reg => console.log('SW registered:', reg.scope))
-      .catch(err => console.log('SW error:', err));
+    navigator.serviceWorker.register('/9m-kote/sw.js').then(reg => {
+      console.log('SW registered:', reg.scope);
+
+      // Check for updates every 60 seconds
+      setInterval(() => reg.update(), 60000);
+
+      // New version available → show update toast
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            // Show update banner
+            showUpdateBanner();
+          }
+        });
+      });
+    }).catch(err => console.log('SW error:', err));
+
+    // When new SW takes control → reload page
+    let refreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!refreshing) { refreshing = true; window.location.reload(); }
+    });
+  });
+}
+
+function showUpdateBanner() {
+  const banner = document.getElementById('updateBanner');
+  if (banner) banner.style.display = 'flex';
+}
+
+window.applyUpdate = function() {
+  const banner = document.getElementById('updateBanner');
+  if (banner) banner.style.display = 'none';
+  navigator.serviceWorker.getRegistration().then(reg => {
+    if (reg && reg.waiting) {
+      reg.waiting.postMessage('skipWaiting');
+    }
   });
 }
 
