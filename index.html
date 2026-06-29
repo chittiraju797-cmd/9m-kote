@@ -205,7 +205,7 @@
 
   <!-- DASHBOARD -->
   <div class="tab-content active" id="tab-dashboard">
-    <div class="sync-indicator" id="syncIndicator"><div class="sync-dot"></div> Firebase Synced</div>
+    <div class="sync-indicator" id="syncIndicator"><div class="sync-dot"></div> <span id="syncText">Firebase Synced</span></div>
     <div class="date-header" id="todayDate"></div>
     <div class="stats-grid">
       <div class="stat-card"><div class="num" id="statTotal">0</div><div class="lbl">Total Arms</div></div>
@@ -435,28 +435,144 @@
 // ============================================================
 const DB_URL = 'https://m-kote-fedda-default-rtdb.firebaseio.com';
 
+let isOnline = navigator.onLine;
+window.addEventListener('online',  () => {
+  isOnline = true;
+  showToast('🟢 Online!');
+  const st = document.getElementById('syncText');
+  if (st) st.textContent = 'Firebase Synced';
+  const sd = document.querySelector('.sync-dot');
+  if (sd) sd.style.background = '#4ade80';
+  syncOfflineQueue();
+});
+window.addEventListener('offline', () => {
+  isOnline = false;
+  showToast('🔴 Offline mode');
+  const st = document.getElementById('syncText');
+  if (st) st.textContent = 'Offline Mode';
+  const sd = document.querySelector('.sync-dot');
+  if (sd) sd.style.background = '#f87171';
+});
+
+// Offline queue for pending writes
+let offlineQueue = JSON.parse(localStorage.getItem('offline_queue') || '[]');
+
+async function syncOfflineQueue() {
+  if (!offlineQueue.length) return;
+  showToast('Syncing ' + offlineQueue.length + ' offline changes...');
+  const queue = [...offlineQueue];
+  offlineQueue = [];
+  localStorage.setItem('offline_queue', '[]');
+  for (const op of queue) {
+    try {
+      if (op.method === 'PUT') await dbSet(op.path, op.value);
+      if (op.method === 'DELETE') await dbRemove(op.path);
+    } catch(e) {
+      offlineQueue.push(op);
+    }
+  }
+  if (offlineQueue.length) {
+    localStorage.setItem('offline_queue', JSON.stringify(offlineQueue));
+    showToast('⚠️ ' + offlineQueue.length + ' changes pending sync');
+  } else {
+    showToast('✅ All changes synced!');
+  }
+}
+
 async function dbGet(path) {
-  const res = await fetch(`${DB_URL}/${path}.json`);
-  if (!res.ok) throw new Error('DB read failed: ' + res.status);
-  return res.json();
+  if (!isOnline) {
+    // Return from localStorage cache
+    const cacheKey = 'cache_' + path.split('/')[0];
+    const cached = localStorage.getItem(cacheKey);
+    if (cached) return JSON.parse(cached);
+    return null;
+  }
+  try {
+    const res = await fetch(`${DB_URL}/${path}.json`);
+    if (!res.ok) throw new Error('DB read failed: ' + res.status);
+    return res.json();
+  } catch(e) {
+    // Fallback to cache on network error
+    const cacheKey = 'cache_' + path.split('/')[0];
+    const cached = localStorage.getItem(cacheKey);
+    if (cached) return JSON.parse(cached);
+    return null;
+  }
 }
+
 async function dbSet(path, value) {
-  const res = await fetch(`${DB_URL}/${path}.json`, {
-    method: 'PUT', headers: {'Content-Type':'application/json'},
-    body: JSON.stringify(value)
-  });
-  if (!res.ok) throw new Error('DB write failed: ' + res.status);
-  return res.json();
+  if (!isOnline) {
+    // Save to offline queue
+    offlineQueue.push({ method: 'PUT', path, value });
+    localStorage.setItem('offline_queue', JSON.stringify(offlineQueue));
+    // Update local cache immediately
+    const parts = path.split('/');
+    const root = parts[0];
+    const cacheKey = 'cache_' + root;
+    let cached = JSON.parse(localStorage.getItem(cacheKey) || 'null') || {};
+    if (parts.length === 2) cached[parts[1]] = value;
+    else if (parts.length === 3) {
+      if (!cached[parts[1]]) cached[parts[1]] = {};
+      cached[parts[1]][parts[2]] = value;
+    }
+    localStorage.setItem(cacheKey, JSON.stringify(cached));
+    // Update in-memory state
+    if (root === 'personnel') { allPersonnel = cached; renderPersonnelGrid(); populatePersonnelSelect(); }
+    if (root === 'records') { allRecords = cached; renderDashboard(); renderRegister(); }
+    if (root === 'users') { allUsers = cached; }
+    return value;
+  }
+  try {
+    const res = await fetch(`${DB_URL}/${path}.json`, {
+      method: 'PUT', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(value)
+    });
+    if (!res.ok) throw new Error('DB write failed: ' + res.status);
+    return res.json();
+  } catch(e) {
+    // Network error - save to queue
+    offlineQueue.push({ method: 'PUT', path, value });
+    localStorage.setItem('offline_queue', JSON.stringify(offlineQueue));
+    showToast('⚠️ Saved offline — will sync when online');
+    return value;
+  }
 }
+
 async function dbRemove(path) {
-  const res = await fetch(`${DB_URL}/${path}.json`, { method: 'DELETE' });
-  if (!res.ok) throw new Error('DB delete failed: ' + res.status);
-  return res.json();
+  if (!isOnline) {
+    offlineQueue.push({ method: 'DELETE', path });
+    localStorage.setItem('offline_queue', JSON.stringify(offlineQueue));
+    // Update local cache
+    const parts = path.split('/');
+    const root = parts[0];
+    const cacheKey = 'cache_' + root;
+    let cached = JSON.parse(localStorage.getItem(cacheKey) || 'null') || {};
+    if (parts.length === 2) delete cached[parts[1]];
+    localStorage.setItem(cacheKey, JSON.stringify(cached));
+    if (root === 'personnel') { allPersonnel = cached; renderPersonnelGrid(); populatePersonnelSelect(); }
+    if (root === 'records') { allRecords = cached; renderDashboard(); renderRegister(); }
+    return null;
+  }
+  try {
+    const res = await fetch(`${DB_URL}/${path}.json`, { method: 'DELETE' });
+    if (!res.ok) throw new Error('DB delete failed: ' + res.status);
+    return res.json();
+  } catch(e) {
+    offlineQueue.push({ method: 'DELETE', path });
+    localStorage.setItem('offline_queue', JSON.stringify(offlineQueue));
+    showToast('⚠️ Deleted offline — will sync when online');
+    return null;
+  }
 }
+
 function dbListen(path, cb) {
-  const es = new EventSource(`${DB_URL}/${path}.json`);
-  es.addEventListener('put', e => { try { cb(JSON.parse(e.data).data); } catch(err){} });
-  return es;
+  if (!isOnline) return null;
+  try {
+    const es = new EventSource(`${DB_URL}/${path}.json`);
+    es.addEventListener('put', e => { try { cb(JSON.parse(e.data).data); } catch(err){} });
+    es.onerror = () => { isOnline = false; };
+    return es;
+  } catch(e) { return null; }
 }
 
 // ============================================================
