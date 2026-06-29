@@ -806,16 +806,25 @@ function getUserCompany() {
 function filterByCompany(records) {
   const company = getUserCompany();
   if (company === 'all') return records;
+  const cLower = company.toLowerCase().replace(/\s+/g,'').replace(/coy|company/g,'');
   return records.filter(r => {
     const p = allPersonnel[r.personId];
-    return p && p.company === company;
+    if (!p || !p.company) return false;
+    const pLower = p.company.toLowerCase().replace(/\s+/g,'').replace(/coy|company/g,'');
+    return pLower === cLower || p.company === company;
   });
 }
 function filterPersonnelByCompany(personnel) {
   const company = getUserCompany();
   if (company === 'all') return personnel;
+  const cLower = company.toLowerCase().replace(/\s+/g,'').replace(/coy|company/g,'');
   return Object.fromEntries(
-    Object.entries(personnel).filter(([id, p]) => p && (p.company === company || !p.company))
+    Object.entries(personnel).filter(([id, p]) => {
+      if (!p) return false;
+      if (!p.company) return false;
+      const pLower = p.company.toLowerCase().replace(/\s+/g,'').replace(/coy|company/g,'');
+      return pLower === cLower || p.company === company;
+    })
   );
 }
 
