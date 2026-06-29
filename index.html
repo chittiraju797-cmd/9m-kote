@@ -434,6 +434,8 @@
 // FIREBASE CONFIG
 // ============================================================
 const DB_URL = 'https://m-kote-fedda-default-rtdb.firebaseio.com';
+// Secret key — outsiders cannot access without this
+const DB_SECRET = '9MaharKote2026SecureKey!';
 
 let isOnline = navigator.onLine;
 window.addEventListener('online',  () => {
@@ -481,18 +483,20 @@ async function syncOfflineQueue() {
 
 async function dbGet(path) {
   if (!isOnline) {
-    // Return from localStorage cache
     const cacheKey = 'cache_' + path.split('/')[0];
     const cached = localStorage.getItem(cacheKey);
     if (cached) return JSON.parse(cached);
     return null;
   }
   try {
-    const res = await fetch(`${DB_URL}/${path}.json`);
+    const res = await fetch(`${DB_URL}/${path}.json?auth=${DB_SECRET}`);
     if (!res.ok) throw new Error('DB read failed: ' + res.status);
-    return res.json();
+    const data = await res.json();
+    // Cache result for offline use
+    const cacheKey = 'cache_' + path.split('/')[0];
+    if (data) localStorage.setItem(cacheKey, JSON.stringify(data));
+    return data;
   } catch(e) {
-    // Fallback to cache on network error
     const cacheKey = 'cache_' + path.split('/')[0];
     const cached = localStorage.getItem(cacheKey);
     if (cached) return JSON.parse(cached);
@@ -523,14 +527,13 @@ async function dbSet(path, value) {
     return value;
   }
   try {
-    const res = await fetch(`${DB_URL}/${path}.json`, {
+    const res = await fetch(`${DB_URL}/${path}.json?auth=${DB_SECRET}`, {
       method: 'PUT', headers: {'Content-Type':'application/json'},
       body: JSON.stringify(value)
     });
     if (!res.ok) throw new Error('DB write failed: ' + res.status);
     return res.json();
   } catch(e) {
-    // Network error - save to queue
     offlineQueue.push({ method: 'PUT', path, value });
     localStorage.setItem('offline_queue', JSON.stringify(offlineQueue));
     showToast('⚠️ Saved offline — will sync when online');
@@ -554,7 +557,7 @@ async function dbRemove(path) {
     return null;
   }
   try {
-    const res = await fetch(`${DB_URL}/${path}.json`, { method: 'DELETE' });
+    const res = await fetch(`${DB_URL}/${path}.json?auth=${DB_SECRET}`, { method: 'DELETE' });
     if (!res.ok) throw new Error('DB delete failed: ' + res.status);
     return res.json();
   } catch(e) {
@@ -568,8 +571,16 @@ async function dbRemove(path) {
 function dbListen(path, cb) {
   if (!isOnline) return null;
   try {
-    const es = new EventSource(`${DB_URL}/${path}.json`);
-    es.addEventListener('put', e => { try { cb(JSON.parse(e.data).data); } catch(err){} });
+    const es = new EventSource(`${DB_URL}/${path}.json?auth=${DB_SECRET}`);
+    es.addEventListener('put', e => {
+      try {
+        const data = JSON.parse(e.data).data;
+        cb(data);
+        // Auto cache every live update
+        const cacheKey = 'cache_' + path.split('/')[0];
+        if (data) localStorage.setItem(cacheKey, JSON.stringify(data));
+      } catch(err){}
+    });
     es.onerror = () => { isOnline = false; };
     return es;
   } catch(e) { return null; }
